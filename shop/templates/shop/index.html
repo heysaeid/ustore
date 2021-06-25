@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    
+{% endblock %}
+
+{% block content %}
+    
+    {% include 'promo.html' %}
+
+    <div class="maincontent-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="latest-product">
+                        <h2 class="section-title">Latest Products</h2>
+                        <div class="product-carousel">   
+                            {% for product in products %}
+                                <div class="single-product">
+                                    <div class="product-f-image">
+                                        <img src="{{ product.image.url }}" alt="">
+                                        <div class="product-hover">
+                                            <form action="{% url 'cart:cart_add' product.id %}" method="POST" class="cart">
+                                                   {{ cart_product_form.override }}
+                                                <div class="quantity" style="display:none">
+                                                   {{ cart_product_form.quantity }}
+                                                </div>
+                                                {% csrf_token %}
+                                                <a href="#" class="add-to-cart-link" onclick="this.parentNode.submit()"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                            </form>   
+                                            <a href="{{ product.get_absolute_url }}" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
+                                    
+                                    <div class="product-carousel-price">
+                                        <ins>${{ product.price }}</ins> <!-- <del>$100.00</del> -->
+                                    </div> 
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End main content area -->
+
+    {% include 'brands.html' %}
+    {% include 'widget.html' %}
+
+{% endblock %}
