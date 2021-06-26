@@ -92,23 +92,25 @@
 
                             <div class="cart-collaterals">
 
+                            
+                            {% if recommended_products %}
+                                <div class="cross-sells">
+                                    <h2>You may be interested in...</h2>
+                                    <ul class="products">
+                                        {% for product in recommended_products %}
+                                            <li class="product">
+                                                <a href="{{ product.get_absolute_url }}">
+                                                    <img width="325" height="325" alt="T_4_front" class="attachment-shop_catalog wp-post-image" src="{{ product.image.url }}">
+                                                    <h3>{{ product.name }}</h3>
+                                                    <span class="price"><span class="amount">£{{ product.price }}</span></span>
+                                                </a>
 
-                            <div class="cross-sells">
-                                <h2>You may be interested in...</h2>
-                                <ul class="products">
-                                    {% for product in random_products %}
-                                        <li class="product">
-                                            <a href="{{ product.get_absolute_url }}">
-                                                <img width="325" height="325" alt="T_4_front" class="attachment-shop_catalog wp-post-image" src="{{ product.image.url }}">
-                                                <h3>{{ product.name }}</h3>
-                                                <span class="price"><span class="amount">£{{ product.price }}</span></span>
-                                            </a>
-
-                                            <a class="add_to_cart_button" rel="nofollow" href="">Select options</a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+                                                <a class="add_to_cart_button" rel="nofollow" href="">Select options</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
 
 
                             <div class="cart_totals ">

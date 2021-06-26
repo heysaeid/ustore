@@ -3,6 +3,7 @@ from shop.models import Product
 from .forms import CartAddProductForm
 from .cart import Cart 
 from coupons.forms import CouponApplyForm
+from shop.recommender import Recommender
 
 # Create your views here.
 def cart_add(request, product_id):
@@ -22,6 +23,8 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = Cart(request)
-    random_products = Product.objects.order_by('?')[:2]
     coupon_apply_form = CouponApplyForm()
-    return render(request, 'cart/cart_detail.html', {'cart':cart, 'random_products':random_products, 'coupon_apply_form':coupon_apply_form})
+    r = Recommender()
+    cart_products = [item['product'] for item in cart]
+    recommended_products = r.suggest_products_for(cart_products, max_results=2)
+    return render(request, 'cart/cart_detail.html', {'cart':cart, 'recommended_products':recommended_products, 'coupon_apply_form':coupon_apply_form})

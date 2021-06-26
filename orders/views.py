@@ -10,10 +10,14 @@ from .forms import OrderCreateForm
 from cart.cart import Cart
 from shop.models import Product
 from .task import order_created
+from shop.recommender import Recommender
 
 # Create your views here.
 def order_create(request):
     cart = Cart(request)
+    r = Recommender()
+    cart_products = [item['product'] for item in cart]
+    r.products_bought(cart_products)
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
