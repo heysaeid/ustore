@@ -23,7 +23,7 @@
                 {% for product in products %}
                     <div class="col-md-3 col-sm-6">
                         <div class="single-shop-product">
-                            <div class="product-upper">
+                            <div class="product-upper product-upper-list">
                                 <img src="/media/{{ product.image }}" alt="{{ product.name }}">
                             </div>
                             <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
@@ -32,7 +32,12 @@
                             </div>  
                             
                             <div class="product-option-shop">
-                                <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70" rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                                <form action="{% url 'cart:cart_add' product.id %}" method="POST">
+                                    {% csrf_token %}
+                                    {{ cart_product_form.override }}
+                                    {{ cart_product_form.quantity }}
+                                    <a href="#" class="add_to_cart_button" onclick="this.parentNode.submit()"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                </form>
                             </div>                       
                         </div>
                     </div>

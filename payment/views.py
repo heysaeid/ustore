@@ -10,7 +10,7 @@ amount = 1000  # Toman / Required
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"  # Required
 email = 'yozellon@gmail.com'  # Optional
 mobile = '09302763504'  # Optional
-CallbackURL = 'http://localhost:8000/payment/verify/' # Important: need to edit for realy server.
+CallbackURL = 'http://127.0.0.1:8000/payment/verify/' # Important: need to edit for realy server.
 
 def send_request(request):
     order_id = request.session.get('order_id')

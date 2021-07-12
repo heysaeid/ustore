@@ -11,31 +11,34 @@ from cart.cart import Cart
 from shop.models import Product
 from .task import order_created
 from shop.recommender import Recommender
+from accounts.forms import LoginForm
 
 # Create your views here.
 def order_create(request):
     cart = Cart(request)
-    r = Recommender()
-    cart_products = [item['product'] for item in cart]
-    r.products_bought(cart_products)
-    if request.method == 'POST':
-        form = OrderCreateForm(request.POST)
-        if form.is_valid():
-            order = form.save(commit=False)
-            order.final_price = int(cart.get_total_price_after_discount()) * 23000
-            order.save()
-            for item in cart:
-                OrderItem.objects.create(order=order, product=item['product'], price=item['price'], quantity=item['quantity'])
-                
-            cart.clear()
-
-            # launch asynchronous task
-            order_created.delay(order.id)
-            request.session['order_id'] = order.id
-            return redirect(reverse('payment:request'))
+    login_form = LoginForm()
+    if cart:
+        r = Recommender()
+        cart_products = [item['product'] for item in cart]
+        r.products_bought(cart_products)
+        if request.method == 'POST':
+            form = OrderCreateForm(request.POST)
+            if form.is_valid():
+                order = form.save(commit=False)
+                order.final_price = int(cart.get_total_price_after_discount()) * 23000
+                order.save()
+                for item in cart:
+                    OrderItem.objects.create(order=order, product=item['product'], price=item['price'], quantity=item['quantity'])
+                cart.clear()
+                # launch asynchronous task
+                order_created.delay(order.id)
+                request.session['order_id'] = order.id
+                return redirect(reverse('payment:request'))
+        else:
+            form = OrderCreateForm(instance=request.user) if request.user.is_authenticated else OrderCreateForm()
+        return render(request, 'orders/order/create.html', {'cart':cart, 'form':form, 'login_form':login_form})
     else:
-        form = OrderCreateForm()
-    return render(request, 'orders/order/create.html', {'cart':cart, 'form':form})
+        return redirect('cart:cart_detail')
 
 @staff_member_required
 def admin_order_detail(request, order_id):
