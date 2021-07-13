@@ -1,17 +1,19 @@
 from django.db import models
 from decimal import Decimal
+from accounts.models import User
 from shop.models import Product
 
 # Create your models here.
 class Order(models.Model):
+    user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE, blank=True)
     transaction_id = models.CharField(max_length=150, blank=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField()
+    email = models.EmailField(blank=True)
     phone = models.CharField(max_length=12)
     address = models.CharField(max_length=250)
     postal_code = models.CharField(max_length=250)
-    country = models.CharField(max_length=100)
+    country = models.CharField(max_length=100, blank=True)
     city = models.CharField(max_length=100)
     county = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now_add=True)

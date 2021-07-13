@@ -1134,3 +1134,18 @@ div.cart-collaterals ul.products li.product:hover .add_to_cart_button{background
 .pagination > li > a, .pagination > li > span {
   color: #5a88ca;
 }
+
+/* Table */
+#result_list{
+    width: 100%
+}
+#result_list thead{
+    background: #d8d6d6
+}
+#result_list th, td{
+    padding: 5px;
+}
+
+.module-result-list{
+    margin-top: 50px
+}

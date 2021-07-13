@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Dashboard - {{ request.user }}    
+{% endblock title %}
+    
+
+{% block content %}
+    <div class="product-big-title-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-bit-title text-center">
+                        <h2>Dear {{ request.user|title }}, welcome</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="single-product-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <h2>Order detail 10</h2>
+            <table id="result_list">
+                <tbody>
+                    <tr>
+                        <th>Created</th>
+                        <td>{{ order.created }}</td>
+                    </tr>
+                    <tr>
+                        <th>Customer</th>
+                        <td>{{ order.first_name }} {{ order.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>E-mail</th>
+                        <td>{{ order.order }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>
+                            {{ order.address }}
+                            {{ order.postal_code }} {{ order.city }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Total amount</th>
+                        <td>${{ order.get_total_cost }}</td>
+                    </tr>
+                    <tr>
+                        <th>status</th>
+                        <td>
+                            {% if order.paid %}
+                                <span style="color: green;">Paid</span>
+                            {% else %}
+                                <span style="color: red;">Pending payment</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="module-result-list">
+                <h2>Items bought</h2>
+                <table id="result_list">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                            <tr class="row1">
+                                <td>{{ item.product.name }}</td>
+                                <td class="num">${{ item.price }}</td>
+                                <td class="num">{{ item.quantity }}</td>
+                                <td class="num">${{ item.get_cost }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="total">
+                            <td colspan="3">Total</td>
+                            <td class="num">${{ order.get_total_cost }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

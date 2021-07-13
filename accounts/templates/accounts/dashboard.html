@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Dashboard - {{ request.user }}    
+{% endblock title %}
+    
+
+{% block content %}
+    <div class="product-big-title-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-bit-title text-center">
+                        <h2>Dear {{ request.user|title }}, welcome</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="single-product-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <h2>Order history</h2>
+            <table id="result_list">
+                <thead>
+                    <tr>
+                        <th scope="col" class="action-checkbox-column">
+                            <div class="text"><span><input type="checkbox" id="action-toggle"></span></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-id">
+                            <div class="text"><a href="?o=1.-9">ID</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-id">
+                            <div class="text"><a href="?o=1.-9">Admin</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-first_name">
+                            <div class="text"><a href="?o=2.-9">First name</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-last_name">
+                            <div class="text"><a href="?o=3.-9">Last name</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-email">
+                            <div class="text"><a href="?o=4.-9">Email</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-address">
+                            <div class="text"><a href="?o=5.-9">Address</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-postal_code">
+                            <div class="text"><a href="?o=6.-9">Postal code</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-city">
+                            <div class="text"><a href="?o=7.-9">City</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-paid">
+                            <div class="text"><a href="?o=8.-9">Paid</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-created sorted descending">
+                            <div class="sortoptions">
+                                <a class="sortremove" href="?o=" title="Remove from sorting"></a>
+                                
+                                <a href="?o=9" class="toggle descending" title="Toggle sorting"></a>
+                            </div>
+                            <div class="text"><a href="?o=9">Created</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="sortable column-updated">
+                        
+                            
+                        
+                        <div class="text"><a href="?o=10.-9">Updated</a></div>
+                        <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="column-order_detail">
+                        
+                        <div class="text"><span>Order detail</span></div>
+                        <div class="clear"></div>
+                        </th>
+                        <th scope="col" class="column-order_pdf">
+                        
+                        <div class="text"><span>Invoice</span></div>
+                        <div class="clear"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                {% for order in orders %}
+                    <tr>
+                        <td class="action-checkbox">
+                            <input type="checkbox" name="_selected_action" value="{{ order.id }}" class="action-select">
+                        </td>
+                        <th class="field-id">
+                            <a href="/admin/orders/order/4/change/">{{ order.id }}</a>
+                        </th>
+                        <td class="field-user_name">{{ order.user }}</td>
+                        <td class="field-first_name">{{ order.first_name }}</td>
+                        <td class="field-last_name">{{ order.last_name }}</td>
+                        <td class="field-email">{{ order.email }}</td>
+                        <td class="field-address">{{ order.address }}</td>
+                        <td class="field-postal_code">{{ order.postal_code }}</td>
+                        <td class="field-city">{{ order.city }}</td>
+                        <td class="field-paid"><img src="{% if order.paid %}/static/admin/img/icon-yes.svg{% else %}/static/admin/img/icon-no.svg{% endif %}" alt="{{ order.paid }}"></td>
+                        <td class="field-created nowrap">{{ order.created }}</td>
+                        <td class="field-updated nowrap">{{ order.updated }}</td>
+                        <td class="field-order_detail"><a href="{% url 'accounts:order_detail' order.id %}">View</a></td>
+                        <td class="field-order_pdf"><a href="/orders/admin/order/{{ order.id }}/pdf/">PDF</a></td>
+                    </tr>
+                {% endfor %}
+                
+                </tbody>
+                </table>
+        </div>
+    </div>
+{% endblock content %}

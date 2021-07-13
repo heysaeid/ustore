@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.conf import settings
-from zeep import Client
+#from zeep import Client
 from orders.models import Order
 from .tasks import payment_coplated
 
 MERCHANT = '74a12cc8-378f-11e6-b3f1-000c295eb8fc'
-client = Client('https://www.zarinpal.com/pg/services/WebGate/wsdl')
+#client = Client('https://www.zarinpal.com/pg/services/WebGate/wsdl')
 amount = 1000  # Toman / Required
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"  # Required
 email = 'yozellon@gmail.com'  # Optional
