@@ -16,7 +16,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('shop:product_list_by_category', args=[self.slug])
+        return reverse('shop:product_list_view', args=[self.slug])
 
 
 def upload_image(instance, filename):
@@ -51,3 +51,11 @@ def upload_gallery_image(instance, filename):
 class ProductGallery(models.Model):
     image = models.ImageField(upload_to=upload_gallery_image)
     product = models.ForeignKey('Product', related_name='gallery', on_delete=models.CASCADE, null=True, blank=True)
+
+
+class Slider(models.Model):
+    title = models.TextField()
+    subtitle = models.CharField(max_length=150)
+    image = models.ImageField(upload_to='slider/image/')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, verbose_name='Set category for slider', help_text='Leave this field blank if you have selected a url')
+    url = models.URLField(blank=True, verbose_name='Set url for slider', help_text='Leave this field blank if you have selected a category')

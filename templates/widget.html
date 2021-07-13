@@ -6,7 +6,7 @@
             <div class="col-md-4">
                 <div class="single-product-widget">
                     <h2 class="product-wid-title">Top Sellers</h2>
-                    <a href="{% url 'shop:top_sellers' %}" class="wid-view-more">View All</a>
+                    <a href="{% url 'shop:product_list_view' 'top-sellers' %}" class="wid-view-more">View All</a>
                     
                     {% for product in top_sellers %}   
                         <div class="single-wid-product">
@@ -29,7 +29,7 @@
             <div class="col-md-4">
                 <div class="single-product-widget">
                     <h2 class="product-wid-title">Recently Viewed</h2>
-                    <a href="#" class="wid-view-more">View All</a>
+                    <a href="{% url 'shop:product_list_view' 'recently-viewed' %}" class="wid-view-more">View All</a>
                     
                     {% for product in recently_viewed %}     
                         <div class="single-wid-product">
@@ -52,7 +52,7 @@
             <div class="col-md-4">
                 <div class="single-product-widget">
                     <h2 class="product-wid-title">Top New</h2>
-                    <a href="{% url 'shop:top_new' %}" class="wid-view-more">View All</a>
+                    <a href="{% url 'shop:product_list_view' 'top-new' %}" class="wid-view-more">View All</a>
                     
                     {% for product in top_new %}
                         <div class="single-wid-product">
