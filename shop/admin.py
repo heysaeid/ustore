@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, ProductGallery, Slider
+from .models import Category, Product, ProductGallery, Review, Slider
 
 # Register your models here.
 @admin.register(Category)
@@ -24,3 +24,8 @@ class ProductAdmin(admin.ModelAdmin):
 class SliderAdmin(admin.ModelAdmin):
     list_display = ['title', 'subtitle', 'category', 'url']
     list_filter = ['category']
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['product', 'name', 'email']
+    list_filter = ['product', 'email']

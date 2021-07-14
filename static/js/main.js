@@ -1,5 +1,12 @@
 jQuery(document).ready(function($){
-    
+    const data_id = $('.product-content-right').attr('data-id')
+    let pmess = $('.st-message')
+    if(getCookie(`review-${data_id}`) == 1){
+        $('.submit-review').remove()
+        pmess.show()
+        pmess.text('You have already rated this post')
+    }
+
     // jQuery sticky Menu
     
 	$(".mainmenu-area").sticky({topSpacing:0});
@@ -79,6 +86,46 @@ jQuery(document).ready(function($){
         event.preventDefault();
     });    
     
+    /* 1. Visualizing things on Hover - See next part for action on click */
+  $('#stars li').on('mouseover', function(){
+    var onStar = parseInt($(this).data('value'), 10); // The star currently mouse on
+   
+    // Now highlight all the stars that's not after the current hovered star
+    $(this).parent().children('li.star').each(function(e){
+      if (e < onStar) {
+        $(this).addClass('hover');
+      }
+      else {
+        $(this).removeClass('hover');
+      }
+    });
+    
+  }).on('mouseout', function(){
+    $(this).parent().children('li.star').each(function(e){
+      $(this).removeClass('hover');
+    });
+  });
+  
+  
+  /* 2. Action to perform on click */
+  $('#stars li').on('click', function(){
+    var onStar = parseInt($(this).data('value'), 10); // The star currently selected
+    var stars = $(this).parent().children('li.star');
+    
+    for (i = 0; i < stars.length; i++) {
+      $(stars[i]).removeClass('selected');
+    }
+    
+    for (i = 0; i < onStar; i++) {
+      $(stars[i]).addClass('selected');
+    }
+    
+    // JUST RESPONSE (Not needed)
+    var ratingValue = parseInt($('#stars li.selected').last().data('value'), 10);
+    $('#id_rating').val(ratingValue)
+    
+  });
+
     // Bootstrap ScrollPSY
     $('body').scrollspy({ 
         target: '.navbar-collapse',
@@ -93,3 +140,49 @@ jQuery(document).ready(function($){
 
   ga('create', 'UA-10146041-21', 'auto');
   ga('send', 'pageview');
+
+    function setCookie(name,value,days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+
+  $('.submit-review form').submit(function(e){
+      e.preventDefault()
+      const data_id = $('.product-content-right').attr('data-id')
+      let pmess = $('.st-message') 
+      $.ajax({
+          type:'POST',
+          data: $(this).serialize(),
+          success: function(response){
+              console.log(response)
+              pmess.css('display', 'block')
+              if(response.status == 'ok'){
+                pmess.css('color', 'green')
+                pmess.text('Your comment was successfully submitted')
+                setCookie(`review-${data_id}`, 1, 5)
+                $('.submit-review').remove()
+              }else{
+                  pmess.css('color', 'red')
+                  pmess.text(response.error)
+              }
+          },
+          error: function(error){
+              console.log(error)
+          },
+      })
+  })

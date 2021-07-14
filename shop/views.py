@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 import redis
 from django.http import request
 from django.shortcuts import render, get_object_or_404
@@ -8,6 +9,7 @@ from django.views.generic import ListView
 from .recommender import Recommender
 from .models import Category, Product, Slider
 from orders.models import OrderItem
+from .forms import ReviewForm
 
 r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB, decode_responses=True)
 
@@ -39,6 +41,18 @@ def home(request):
 
 def product_detail(request, slug):
     product = Product.objects.get(slug=slug)
+    review_form = ReviewForm(request.POST or None)
+    data = {}
+    if request.is_ajax():
+        if review_form.is_valid():
+            form = review_form.save(commit=False)
+            form.product = product
+            form.save()
+            data['id'] = product.id
+            data['status'] = 'ok'
+        else:
+            data['error'] = next(iter(review_form.errors.items()))[1][0]
+        return JsonResponse(data)
     # Save the latest hits
     r.hsetnx('product_visit', product.id, 0)
     r.hincrby('product_visit', product.id)
@@ -47,8 +61,13 @@ def product_detail(request, slug):
     recommender = Recommender()
     recommended_products = recommender.suggest_products_for([product], 2)
     cart_product_form = CartAddProductForm()
-    return render(request, 'shop/detail.html', {'product':product, 'recommended_products':recommended_products, 'cart_product_form':cart_product_form})
+    return render(request, 'shop/detail.html', {'product':product,'form':review_form ,'recommended_products':recommended_products, 'cart_product_form':cart_product_form})
 
+def add_review(request):
+    form = ReviewForm(request.POST)
+    if form.is_Valid():
+        form = form.save(commit=False)
+        form.product(request)
 
 class ProductListView(ListView):
     model = Product

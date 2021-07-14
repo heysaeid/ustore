@@ -28,7 +28,7 @@
                 <!-- Include sidebar -->
                 {% single_sidebar %}
                 <div class="col-md-8">
-                    <div class="product-content-right">
+                    <div class="product-content-right" data-id="{{ product.id }}">
                         <div class="product-breadcroumb">
                             <a href="/">Home</a>
                             <a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a>
@@ -38,6 +38,15 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="product-images">
+                                    <div class="product-wid-rating">
+                                        Score : 
+                                        {% if product.average_score.ranges %}
+                                            {% for i in product.average_score.ranges %}
+                                                <i class="fa fa-star"></i>
+                                            {% endfor %}
+                                            ({{ product.average_score.reviews_count }})
+                                        {% endif %}
+                                    </div>
                                     <div class="product-main-img">
                                         <img src="{{ product.image.url }}" alt="">
                                     </div>
@@ -78,26 +87,42 @@
                                         <div class="tab-content">
                                             <div role="tabpanel" class="tab-pane fade in active" id="home">
                                                 <h2>Product Description</h2>  
-                                                {{ product.description }}
+                                                {{ product.description|safe }}
                                             </div>
                                             <div role="tabpanel" class="tab-pane fade" id="profile">
                                                 <h2>Reviews</h2>
+                                                <p class="st-message">Success</p>
                                                 <div class="submit-review">
-                                                    <p><label for="name">Name</label> <input name="name" type="text"></p>
-                                                    <p><label for="email">Email</label> <input name="email" type="email"></p>
-                                                    <div class="rating-chooser">
-                                                        <p>Your rating</p>
-
-                                                        <div class="rating-wrap-post">
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
+                                                    <form method="POST">
+                                                        {% csrf_token %}
+                                                        <p><label for="name">Name</label>{{ form.name }}</p>
+                                                        <p><label for="email">Email</label>{{ form.email }}</p>
+                                                        <div class="rating-chooser">
+                                                            <p>Your rating</p>
+                                                            <div class='rating-stars text-center'>
+                                                                <ul id='stars'>
+                                                                <li class='star' title='Poor' data-value='1'>
+                                                                    <i class='fa fa-star fa-fw'></i>
+                                                                </li>
+                                                                <li class='star' title='Fair' data-value='2'>
+                                                                    <i class='fa fa-star fa-fw'></i>
+                                                                </li>
+                                                                <li class='star' title='Good' data-value='3'>
+                                                                    <i class='fa fa-star fa-fw'></i>
+                                                                </li>
+                                                                <li class='star' title='Excellent' data-value='4'>
+                                                                    <i class='fa fa-star fa-fw'></i>
+                                                                </li>
+                                                                <li class='star' title='WOW!!!' data-value='5'>
+                                                                    <i class='fa fa-star fa-fw'></i>
+                                                                </li>
+                                                                </ul>
+                                                            </div>
+                                                            {{ form.rating }}
                                                         </div>
-                                                    </div>
-                                                    <p><label for="review">Your review</label> <textarea name="review" id="" cols="30" rows="10"></textarea></p>
-                                                    <p><input type="submit" value="Submit"></p>
+                                                        <p><label for="review">Your review</label>{{ form.description }}</textarea></p>
+                                                        <p><input type="submit" value="Submit"></p>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
