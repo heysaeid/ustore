@@ -29,7 +29,6 @@
                         
                         {% if cart %}
                             <div class="woocommerce">
-                                <form method="post" action="{% url 'coupons:apply' %}">
                                     <table cellspacing="0" class="shop_table cart">
                                         <thead>
                                             <tr>
@@ -42,45 +41,51 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for item in cart %}
-                                                {% with product=item.product %}
-                                                    <tr class="cart_item">
-                                                        <td class="product-remove">
-                                                            <a title="Remove this item" class="remove" href="{% url 'cart:cart_remove' product.id %}">×</a> 
-                                                        </td>
+                                            <form action="{% url 'cart:update_cart' %}" method="POST" id="form_update_cart">
+                                                {% csrf_token %}
+                                                {% for item in cart %}
+                                                    {% with product=item.product form=cahnge_quantity_form|sort_form:forloop.counter %}
+                                                        <tr class="cart_item">
+                                                            <td class="product-remove">
+                                                                <a title="Remove this item" class="remove" href="{% url 'cart:cart_remove' product.id %}">×</a> 
+                                                            </td>
 
-                                                        <td class="product-thumbnail">
-                                                            <a href="{{ product.image.url }}"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="{{ product.image.url }}"></a>
-                                                        </td>
+                                                            <td class="product-thumbnail">
+                                                                <a href="{{ product.image.url }}"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="{{ product.image.url }}"></a>
+                                                            </td>
 
-                                                        <td class="product-name">
-                                                            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a> 
-                                                        </td>
+                                                            <td class="product-name">
+                                                                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a> 
+                                                            </td>
 
-                                                        <td class="product-price">
-                                                            <span class="amount">£{{ product.price }}</span> 
-                                                        </td>
+                                                            <td class="product-price">
+                                                                <span class="amount">£{{ product.price }}</span> 
+                                                            </td>
 
-                                                        <td class="product-quantity">
-                                                            <div class="quantity buttons_added">
-                                                                <input type="button" class="minus" value="-">
-                                                                <input type="number" size="4" class="input-text qty text" title="Qty" value="{{ item.quantity }}" min="0" step="1">
-                                                                <input type="button" class="plus" value="+">
-                                                            </div>
-                                                        </td>
+                                                            <td class="product-quantity">
+                                                                <div class="quantity buttons_added">
+                                                                    <input type="button" data-action="minus" class="button_added" value="-">
+                                                                    {{ form.quantity }}
+                                                                    {{ form.override }}
+                                                                    <input type="button" data-action="plus" class="button_added" value="+">
+                                                                </div>
+                                                            </td>
 
-                                                        <td class="product-subtotal">
-                                                            <span class="amount">£{{ item.total_price }}</span> 
-                                                        </td>
-                                                    </tr>
-                                                {% endwith %}
-                                            {% endfor %}
+                                                            <td class="product-subtotal">
+                                                                <span class="amount">£{{ item.total_price }}</span> 
+                                                            </td>
+                                                        </tr>
+                                                    {% endwith %}
+                                                {% endfor %}
+                                            </form>
                                             <tr>
                                                 <td class="actions" colspan="6">
                                                     <div class="coupon">
-                                                        <label for="coupon_code">Coupon:</label>
-                                                        {{ coupon_apply_form.code }}
-                                                        {% csrf_token %}
+                                                        <form action="{% url 'coupons:apply' %}" method="POST" class="coupon">
+                                                            <label for="coupon_code">Coupon:</label>
+                                                            {{ coupon_apply_form.code }}
+                                                            {% csrf_token %}
+                                                        </form>
                                                         <!-- <input type="text" placeholder="Coupon code" value="" id="coupon_code" class="input-text" name="coupon_code"> -->
                                                         <input type="submit" value="Apply Coupon" name="apply_coupon" class="button">
                                                     </div>
@@ -90,7 +95,6 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                </form>
 
                                 <div class="cart-collaterals">
 

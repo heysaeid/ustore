@@ -1,12 +1,14 @@
 jQuery(document).ready(function($){
-    const data_id = $('.product-content-right').attr('data-id')
+    const data_id = $('.product-favorite p').attr('data-id'), cookie = getCookie('wishlist');
     let pmess = $('.st-message')
     if(getCookie(`review-${data_id}`) == 1){
         $('.submit-review').remove()
         pmess.show()
         pmess.text('You have already rated this post')
     }
-
+    if(cookie.indexOf(data_id) != -1){
+        $('.product-favorite p').text('Remove from favorites')
+    }
     // jQuery sticky Menu
     
 	$(".mainmenu-area").sticky({topSpacing:0});
@@ -161,9 +163,9 @@ jQuery(document).ready(function($){
         return null;
     }
 
-  $('.submit-review form').submit(function(e){
+  $('#form-review').submit(function(e){
       e.preventDefault()
-      const data_id = $('.product-content-right').attr('data-id')
+      const data_id = $('.product-favorite p').attr('data-id')
       let pmess = $('.st-message') 
       $.ajax({
           type:'POST',
@@ -186,3 +188,51 @@ jQuery(document).ready(function($){
           },
       })
   })
+
+$('.product-favorite p').click(function(){
+    let cookie = getCookie('wishlist')
+    let msg = 'This product was added to favorites', txt = 'Remove from favorites'
+    const data_id = $(this).attr('data-id')
+    if(cookie == null){
+        setCookie('wishlist', [data_id], 5)
+    }else if(cookie.indexOf(data_id) == -1){
+        setCookie('wishlist', cookie + data_id, 5)
+    }else{
+        msg = 'This product was removed from favorites'
+        txt = 'Add to favorites'
+        setCookie('wishlist', cookie.replace(data_id, ''), 5)
+    }
+    $(this).text(txt)
+    alert(msg)
+})
+
+$('.button_added').click(function(){
+    const action = $(this).attr('data-action')
+    let input = $(this).parent().find('.qty'), quantity = parseInt(input.val())
+    if(action=='plus' && quantity < 10){
+        input.val(quantity+1)
+    }else if(action=='minus' && quantity > 1){
+        input.val(quantity-1)
+    }
+})
+
+$('input[name=update_cart]').click(function(e){
+    e.preventDefault()
+    let data = $('#form_update_cart').serialize()
+    const action = $('#form_update_cart').attr('action')
+    $.ajax({
+        type: 'POST',
+        url: action,
+        data: data,
+        success: function(response){
+            if(response.status=='ok'){
+                alert('Cart was updated')
+            }else{
+                alert(response.error)
+            }
+        },
+        error: function(error){
+            console.log(error)
+        }
+    })
+})

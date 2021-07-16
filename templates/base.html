@@ -44,7 +44,7 @@
                     <div class="user-menu">
                         <ul>
                             <li><a href="{% url 'accounts:dashboard' %}"><i class="fa fa-user"></i> My Account</a></li>
-                            <li><a href="#"><i class="fa fa-heart"></i> Wishlist</a></li>
+                            <li><a href="{% url 'shop:product_list_view' 'wishlist' %}"><i class="fa fa-heart"></i> Wishlist</a></li>
                             <li><a href="{% url 'cart:cart_detail' %}"><i class="fa fa-user"></i> My Cart</a></li>
                             <li><a href="{% url 'orders:order_create' %}"><i class="fa fa-user"></i> Checkout</a></li>
                             <li><a href="{% url 'accounts:user_login' %}"><i class="fa fa-user"></i> Login</a></li>
@@ -113,7 +113,7 @@
                         <li class="active"><a href="/">Home</a></li>
                         <li><a href="{% url 'cart:cart_detail' %}">Cart</a></li>
                         <li><a href="{% url 'orders:order_create' %}">Checkout</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="{% url 'shop:contact' %}">Contact</a></li>
                     </ul>
                 </div>  
             </div>

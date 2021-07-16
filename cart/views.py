@@ -1,9 +1,16 @@
+import json
+from decimal import Decimal
+import decimal
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.forms import formset_factory 
+from django.views.decorators.http import require_POST
 from shop.models import Product
 from .forms import CartAddProductForm
 from .cart import Cart 
 from coupons.forms import CouponApplyForm
 from shop.recommender import Recommender
+
 
 # Create your views here.
 def cart_add(request, product_id):
@@ -23,8 +30,27 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = Cart(request)
+    cahnge_quantity_form = formset_factory(CartAddProductForm)
+    cahnge_quantity_form = cahnge_quantity_form(initial=[{'quantity':item['quantity']} for item in cart])
     coupon_apply_form = CouponApplyForm()
     r = Recommender()
     cart_products = [item['product'] for item in cart]
     recommended_products = r.suggest_products_for(cart_products, max_results=2)
-    return render(request, 'cart/cart_detail.html', {'cart':cart, 'recommended_products':recommended_products, 'coupon_apply_form':coupon_apply_form})
+    return render(request, 'cart/cart_detail.html', {'cart':cart, 'cahnge_quantity_form':cahnge_quantity_form, 'recommended_products':recommended_products})
+
+@require_POST
+def update_cart(request):
+    session = request.session['cart']
+    data = {'status':'ok'}
+    if request.is_ajax():
+        for i, item in enumerate(session):
+            try:
+                quantity = int(request.POST[f'form-{i}-quantity'])
+                if quantity > 0 and quantity < 11:
+                    session[item]['quantity'] = quantity
+            except ValueError:
+                data['status'] = ''
+                data['error'] = 'Input data type is incorrect'
+                break
+        request.session.modified = True
+        return JsonResponse(data)

@@ -768,10 +768,17 @@ input[type="submit"]:hover, button[type=submit]:hover {background-color: #222}
 .single-sidebar a {
     display: block;
 }
-.product-breadcroumb {
+.product-favorite{
+    font-family: cursive;
+    color: #2d88a3
+}
+.product-favorite p{
+    cursor: pointer
+}
+.product-breadcroumb, .product-favorite {
     margin-bottom: 20px;
 }
-.product-breadcroumb > a {
+.product-breadcroumb > a{
     margin-right: 31px;
     position: relative;
 }
@@ -1180,4 +1187,8 @@ div.cart-collaterals ul.products li.product:hover .add_to_cart_button{background
   }
   .st-message{
       display: none;
+  }
+
+  .product_list_shop #id_quantity{
+      display: none
   }

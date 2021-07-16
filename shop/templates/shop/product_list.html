@@ -32,7 +32,7 @@
                             </div>  
                             
                             <div class="product-option-shop">
-                                <form action="{% url 'cart:cart_add' product.id %}" method="POST">
+                                <form action="{% url 'cart:cart_add' product.id %}" method="POST" class="product_list_shop">
                                     {% csrf_token %}
                                     {{ cart_product_form.override }}
                                     {{ cart_product_form.quantity }}

@@ -8,6 +8,6 @@ def single_sidebar():
     latest_products = Product.objects.filter(available=True)[:4]
     return {'latest_products':latest_products}
 
-@register.simple_tag()
-def test():
-    return 'yes'
+@register.filter
+def sort_form(form, num):
+    return form[num-1]

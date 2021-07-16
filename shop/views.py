@@ -1,15 +1,16 @@
-from django.http.response import JsonResponse
 import redis
+from django.http.response import JsonResponse
 from django.http import request
 from django.shortcuts import render, get_object_or_404
-from cart.forms import CartAddProductForm
+from django.core.mail import send_mail, BadHeaderError
 from django.db.models import Count
 from django.conf import settings
 from django.views.generic import ListView
+from cart.forms import CartAddProductForm
 from .recommender import Recommender
 from .models import Category, Product, Slider
 from orders.models import OrderItem
-from .forms import ReviewForm
+from .forms import ReviewForm, ContactForm
 
 r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB, decode_responses=True)
 
@@ -63,11 +64,21 @@ def product_detail(request, slug):
     cart_product_form = CartAddProductForm()
     return render(request, 'shop/detail.html', {'product':product,'form':review_form ,'recommended_products':recommended_products, 'cart_product_form':cart_product_form})
 
-def add_review(request):
-    form = ReviewForm(request.POST)
-    if form.is_Valid():
-        form = form.save(commit=False)
-        form.product(request)
+def contact(request):
+    print(request.COOKIES['wishlist'])
+    message= None
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            try:
+                message = 'Email sent successfully, we will reply soon'
+                send_mail(cd['subject'], cd['message'], cd['from_email'], ['yozellon@gmail.com'])
+            except BadHeaderError:
+                message = 'Invaild header found.'
+    else:
+        form = ContactForm()
+    return render(request, 'other/contact.html', {'form':form, 'message':message})
 
 class ProductListView(ListView):
     model = Product
@@ -85,6 +96,9 @@ class ProductListView(ListView):
             products_ids = inOrder(recenlty_viewed_ids, len(recenlty_viewed_ids))
         elif slug == 'top-new':
             products_ids = top_new_ids()
+        elif slug == 'wishlist':
+            cookie = request.COOKIES['wishlist']
+            products_ids = [int(item) for item in cookie]
         else:
             category = get_object_or_404(Category, slug=slug)
             return Product.objects.filter(category=category)

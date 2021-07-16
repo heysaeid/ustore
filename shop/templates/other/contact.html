@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    - Contact    
+{% endblock title %}
+
+{% block content %}
+    <div class="product-big-title-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-bit-title text-center">
+                        <h2>Contact</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="single-product-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <h2>Contact</h2>
+            <div class="submit-review">
+                {% if message %}
+                    <p style="color: #3179a3;font-size: 17px;">{{ message }}</p>
+                {% endif %} 
+                
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p style="color: red;font-size: 17px;">{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}  
+                {% endif %}
+                    
+                <form method="POST">
+                    {% csrf_token %}
+                    <p><label for="name">Subject</label>{{ form.subject }}</p>
+                    <p><label for="email">Email</label>{{ form.from_email }}</p>
+                    <p><label for="message">Message</label>{{ form.message }}</textarea></p>
+                    <p><input type="submit" value="Send"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

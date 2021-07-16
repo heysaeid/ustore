@@ -6,7 +6,6 @@
     {{ product.name }}
 {% endblock title %}
 
-
 {% block content %}
        
     <div class="product-big-title-area">
@@ -28,11 +27,14 @@
                 <!-- Include sidebar -->
                 {% single_sidebar %}
                 <div class="col-md-8">
-                    <div class="product-content-right" data-id="{{ product.id }}">
+                    <div class="product-content-right">
                         <div class="product-breadcroumb">
                             <a href="/">Home</a>
                             <a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a>
                             <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                        </div>
+                        <div class="product-favorite">
+                            <p data-id="{{ product.id }}">Add to my favorite</p>
                         </div>
                         
                         <div class="row">
@@ -93,7 +95,7 @@
                                                 <h2>Reviews</h2>
                                                 <p class="st-message">Success</p>
                                                 <div class="submit-review">
-                                                    <form method="POST">
+                                                    <form method="POST" id="form-review">
                                                         {% csrf_token %}
                                                         <p><label for="name">Name</label>{{ form.name }}</p>
                                                         <p><label for="email">Email</label>{{ form.email }}</p>
