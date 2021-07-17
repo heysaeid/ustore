@@ -113,7 +113,7 @@
                         <td class="field-paid"><img src="{% if order.paid %}/static/admin/img/icon-yes.svg{% else %}/static/admin/img/icon-no.svg{% endif %}" alt="{{ order.paid }}"></td>
                         <td class="field-created nowrap">{{ order.created }}</td>
                         <td class="field-updated nowrap">{{ order.updated }}</td>
-                        <td class="field-order_detail"><a href="{% url 'accounts:order_detail' order.id %}">View</a></td>
+                        <td class="field-order_detail"><a href="{% url 'order_detail' order.id %}">View</a></td>
                         <td class="field-order_pdf"><a href="/orders/admin/order/{{ order.id }}/pdf/">PDF</a></td>
                     </tr>
                 {% endfor %}

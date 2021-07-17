@@ -33,7 +33,7 @@
                                 <div class="woocommerce-info">Returning customer? <a class="showlogin" data-toggle="collapse" href="#login-form-wrap" aria-expanded="false" aria-controls="login-form-wrap">Click here to login</a>
                                 </div>
 
-                                <form action="{% url 'accounts:user_login' %}" id="login-form-wrap" class="login collapse" method="post">
+                                <form action="{% url 'login' %}" id="login-form-wrap" class="login collapse" method="post">
                                     {% csrf_token %}
                                     <p>If you have shopped with us before, please enter your details in the boxes below. If you are a new customer please proceed to the Billing &amp; Shipping section.</p>
                                         

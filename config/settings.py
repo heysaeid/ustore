@@ -40,12 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ckeditor',
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
     'payment.apps.PaymentConfig',
     'coupons.apps.CouponsConfig',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -155,5 +155,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'accounts.authentications.EmailBackend',
 ]
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
 
 AUTH_USER_MODEL = 'accounts.User'

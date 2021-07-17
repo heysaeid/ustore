@@ -216,7 +216,7 @@ $('.button_added').click(function(){
     }
 })
 
-$('input[name=update_cart]').click(function(e){
+$('.update-cart-button').click(function(e){
     e.preventDefault()
     let data = $('#form_update_cart').serialize()
     const action = $('#form_update_cart').attr('action')

@@ -36,7 +36,7 @@ def cart_detail(request):
     r = Recommender()
     cart_products = [item['product'] for item in cart]
     recommended_products = r.suggest_products_for(cart_products, max_results=2)
-    return render(request, 'cart/cart_detail.html', {'cart':cart, 'cahnge_quantity_form':cahnge_quantity_form, 'recommended_products':recommended_products})
+    return render(request, 'cart/cart_detail.html', {'cart':cart, 'cahnge_quantity_form':cahnge_quantity_form, 'coupon_apply_form':coupon_apply_form, 'recommended_products':recommended_products})
 
 @require_POST
 def update_cart(request):

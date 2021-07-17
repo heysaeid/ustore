@@ -43,11 +43,17 @@
                 <div class="col-md-8">
                     <div class="user-menu">
                         <ul>
-                            <li><a href="{% url 'accounts:dashboard' %}"><i class="fa fa-user"></i> My Account</a></li>
+                            <li><a href="{% url 'dashboard' %}"><i class="fa fa-user"></i> My Account</a></li>
                             <li><a href="{% url 'shop:product_list_view' 'wishlist' %}"><i class="fa fa-heart"></i> Wishlist</a></li>
                             <li><a href="{% url 'cart:cart_detail' %}"><i class="fa fa-user"></i> My Cart</a></li>
                             <li><a href="{% url 'orders:order_create' %}"><i class="fa fa-user"></i> Checkout</a></li>
-                            <li><a href="{% url 'accounts:user_login' %}"><i class="fa fa-user"></i> Login</a></li>
+                            
+                            {% if request.user.is_authenticated %}
+                                <li><a href="{% url 'password_change' %}"><i class="fa fa-user"></i> Change your password</a></li>
+                                <li><a href="{% url 'logout' %}"><i class="fa fa-user"></i> Logout</a></li>
+                            {% else %}
+                                <li><a href="{% url 'login' %}"><i class="fa fa-user"></i> Login</a></li>
+                            {% endif %}                       
                         </ul>
                     </div>
                 </div>

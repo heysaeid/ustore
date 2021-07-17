@@ -85,11 +85,11 @@
                                                             <label for="coupon_code">Coupon:</label>
                                                             {{ coupon_apply_form.code }}
                                                             {% csrf_token %}
+                                                            <input type="submit" value="Apply Coupon" name="apply_coupon" class="button">
                                                         </form>
                                                         <!-- <input type="text" placeholder="Coupon code" value="" id="coupon_code" class="input-text" name="coupon_code"> -->
-                                                        <input type="submit" value="Apply Coupon" name="apply_coupon" class="button">
                                                     </div>
-                                                    <input type="submit" value="Update Cart" name="update_cart" class="button">
+                                                    <input type="submit" value="Update Cart" name="update_cart" class="button update-cart-button">
                                                     <a href="{% url 'orders:order_create' %}" class="checkout-button button alt wc-forward">Checkout</a>
                                                 </td>
                                             </tr>
