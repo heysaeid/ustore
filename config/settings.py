@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
     'payment.apps.PaymentConfig',
     'coupons.apps.CouponsConfig',
+    'newsletter.apps.NewsletterConfig',
     'ckeditor',
 ]
 
@@ -73,6 +74,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'cart.context_processors.cart',
                 'cart.context_processors.categories',
+                'newsletter.context_processors.new_subscribe_form',
             ],
         },
     },

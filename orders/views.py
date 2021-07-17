@@ -45,6 +45,8 @@ class OrderCreateView(TemplateResponseMixin, View):
         form = OrderCreateForm(request.POST, request=request)
         if form.is_valid():
             order = form.save(commit=False)
+
+            # If the user did not log in, we will create an account
             if not request.user.is_authenticated:
                 cd = form.cleaned_data
                 ind = cd['email'].index('@')

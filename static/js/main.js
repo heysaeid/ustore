@@ -236,3 +236,24 @@ $('.update-cart-button').click(function(e){
         }
     })
 })
+
+$('.newsletter-form form').submit(function(e){
+    e.preventDefault()
+    const action = $(this).attr('action')
+    const data = $(this).serialize()
+    $.ajax({
+        type:'POST',
+        url:action,
+        data:data,
+        success: function(response){
+            if(response.status=='ok'){
+                alert('A confirmation email has been sent to you in the newsletter')
+            }else{
+                alert(response.error)
+            }
+        },
+        error: function(error){
+            console.log(error)
+        }
+    })
+})

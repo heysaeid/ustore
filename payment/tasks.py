@@ -9,7 +9,7 @@ from orders.models import Order
 @task
 def payment_coplated(order_id):
     order = Order.objects.get(id=order_id)
-
+    
     # create invoice e-mail
     subject = f'My Shop - EE Invoice no. {order.id}'
     message = 'Please, find attached the invoice for your recent purchase.'

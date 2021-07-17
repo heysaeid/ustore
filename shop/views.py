@@ -65,7 +65,6 @@ def product_detail(request, slug):
     return render(request, 'shop/detail.html', {'product':product,'form':review_form ,'recommended_products':recommended_products, 'cart_product_form':cart_product_form})
 
 def contact(request):
-    print(request.COOKIES['wishlist'])
     message= None
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -86,7 +85,7 @@ class ProductListView(ListView):
     context_object_name = 'products'
     paginate_by = 20
 
-    def get_querset(self):
+    def get_queryset(self):
         qs = super().get_queryset()
         slug = self.kwargs['slug']
         if slug == 'top-sellers':
