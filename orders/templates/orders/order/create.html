@@ -29,6 +29,22 @@
                     <div class="product-content-right">
                         <div class="woocommerce">
                             
+                            {% if form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <p style="color: red;">{{ error }}</p>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                            
+                            {% if error_message %}
+                                {% for field in error_message %}
+                                    {% for error in field.errors %}
+                                        <p style="color: red;">{{ error }}</p>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                                
                             {% if not request.user.is_authenticated %}
                                 <div class="woocommerce-info">Returning customer? <a class="showlogin" data-toggle="collapse" href="#login-form-wrap" aria-expanded="false" aria-controls="login-form-wrap">Click here to login</a>
                                 </div>
@@ -375,26 +391,28 @@
                                                     <p id="billing_phone_field" class="form-row form-row-last validate-required validate-phone">
                                                         <label class="" for="billing_phone">Phone <abbr title="required" class="required">*</abbr>
                                                         </label>
-                                                        <input type="email" class="input-text" value="{{ request.user }}">
-                                                    </p>
-
-                                                    <div class="clear"></div>
-                                                    
-                                                    <p id="billing_phone_field" class="form-row form-row-last validate-required validate-phone">
-                                                        <label class="" for="billing_phone">Phone <abbr title="required" class="required">*</abbr>
-                                                        </label>
                                                         {{ form.phone }}
                                                     </p>
-                                                    <div class="clear"></div>
 
+                                                    <div class="clear"></div>
                                                     
+                                                    
+                                                    {% if not request.user.is_authenticated %}
+                                                        <p id="billing_phone_field" class="form-row form-row-last validate-required validate-phone">
+                                                            <label class="" for="billing_phone">Email <abbr title="required" class="required">*</abbr>
+                                                            </label>
+                                                            {{ form.email }}
+                                                        </p>
+                                                        <div class="clear"></div>
+                                                    {% endif %}
+                                                        
                                                     {% if not request.user.is_authenticated %}   
                                                         <div class="create-account">
                                                             <p>Create an account by entering the information below. If you are a returning customer please login at the top of the page.</p>
                                                             <p id="account_password_field" class="form-row validate-required">
                                                                 <label class="" for="account_password">Account password <abbr title="required" class="required">*</abbr>
                                                                 </label>
-                                                                <input type="password" value="" placeholder="Password" id="account_password" name="account_password" class="input-text">
+                                                                {{ form.password }}
                                                             </p>
                                                             <div class="clear"></div>
                                                         </div>
