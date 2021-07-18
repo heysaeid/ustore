@@ -1,5 +1,6 @@
 import redis
-from django.http.response import JsonResponse
+from django.http.response import Http404, JsonResponse
+from django.db.models import Q
 from django.http import request
 from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail, BadHeaderError
@@ -79,11 +80,32 @@ def contact(request):
         form = ContactForm()
     return render(request, 'other/contact.html', {'form':form, 'message':message})
 
-class ProductListView(ListView):
+class ProductListMixin(object):
     model = Product
     template_name = 'shop/product_list.html'
     context_object_name = 'products'
     paginate_by = 20
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['cart_product_form'] = CartAddProductForm()
+        if self.kwargs.get('slug') == None:
+            context['page_title'] = f'search for {self.request.GET.get("s", "")}'
+        else:
+            context['page_title'] = self.kwargs['slug'].replace('/', ' ')
+        return context
+
+class SearchListView(ProductListMixin, ListView):
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('s')
+        if query is not None:
+            products = Product.objects.filter(Q(name__icontains=query))
+        else:
+            return Http404
+        return products
+
+class ProductListView(ProductListMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -102,12 +124,6 @@ class ProductListView(ListView):
             category = get_object_or_404(Category, slug=slug)
             return Product.objects.filter(category=category)
         return qs.filter(id__in=products_ids)
-
-    def get_context_data(self):
-        context = super().get_context_data()
-        context['cart_product_form'] = CartAddProductForm()
-        context['page_title'] = self.kwargs['slug'].replace('/', ' ')
-        return context
 
 
 def best_selling_products(num=None):
