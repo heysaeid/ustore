@@ -1,7 +1,7 @@
+import random
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-import random
 from .models import Subscribe
 from .forms import NewSubscriberForm
 from .tasks import subscribe_complete

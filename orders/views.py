@@ -1,3 +1,4 @@
+import weasyprint
 from django.contrib.auth import authenticate, login as auth_login
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -6,7 +7,6 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.conf import settings
 from django.views.generic.base import TemplateResponseMixin, View
-import weasyprint
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from cart.cart import Cart

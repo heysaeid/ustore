@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from decimal import Decimal
-from accounts.models import User
 from shop.models import Product
+
+User = get_user_model()
 
 # Create your models here.
 class Order(models.Model):
