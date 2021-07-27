@@ -1,5 +1,7 @@
+from django.core.cache import cache
 from django.db import models
 from django.db.models.fields import related
+from django.db.models.signals import post_save, post_delete
 from django.urls import reverse
 from ckeditor.fields import RichTextField
 
@@ -79,3 +81,8 @@ class Slider(models.Model):
     image = models.ImageField(upload_to='slider/image/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, verbose_name='Set category for slider', help_text='Leave this field blank if you have selected a url')
     url = models.URLField(blank=True, verbose_name='Set url for slider', help_text='Leave this field blank if you have selected a category')
+
+def save_delete_slider(sender, **kwargs):
+    cache.clear()
+post_save.connect(save_delete_slider, sender=Slider)
+post_delete.connect(save_delete_slider, sender=Slider)

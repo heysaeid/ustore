@@ -1,5 +1,6 @@
 import redis
 from django.http.response import Http404, JsonResponse
+from django.core.cache import cache
 from django.db.models import Q
 from django.http import request
 from django.shortcuts import render, get_object_or_404
@@ -17,21 +18,28 @@ r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.
 
 # Create your views here.
 def home(request):
-    categories = Category.objects.all()
-    products = Product.objects.filter(available=True)
+    # categories = Category.objects.all()
+    if 'products' in cache:
+        products = cache.get('products')
+    else:
+        products = Product.objects.filter(available=True)
+        cache.set('products', products, timeout=settings.TIMEOUT_PRODUCTS)
     # Top Sellers
     top_sellers_ids = best_selling_products(3)
-    top_sellers = Product.objects.filter(id__in=top_sellers_ids)
+    top_sellers = products.filter(id__in=top_sellers_ids)
     # Recently Viewed
     recenlty_viewed_ids = r.lrange('recently_viewd', 0, -1)
     recenlty_viewed_ids = inOrder(recenlty_viewed_ids, 3)
     recently_viewed = products.filter(id__in=recenlty_viewed_ids).order_by('id')
     # Top new
     top_new = products.filter(id__in=top_new_ids(3))
-    sliders = Slider.objects.all()[:4]
+    if 'sliders' in cache:
+        sliders = cache.get('sliders')
+    else:
+        sliders = Slider.objects.all()[:4]
+        cache.set('sliders', sliders, timeout=settings.TIMEOUT_SLIDERS)
     cart_product_form = CartAddProductForm()
     return render(request, 'shop/index.html', {
-        'categories': categories, 
         'products': products[:10], 
         'top_sellers': top_sellers, 
         'recently_viewed': recently_viewed, 
@@ -118,11 +126,16 @@ class ProductListView(ProductListMixin, ListView):
         elif slug == 'top-new':
             products_ids = top_new_ids()
         elif slug == 'wishlist':
-            cookie = request.COOKIES['wishlist']
-            products_ids = [int(item) for item in cookie]
+            cookie = self.request.COOKIES.get('wishlist')
+            products_ids = [int(item) for item in cookie] if cookie  else []
         else:
             category = get_object_or_404(Category, slug=slug)
-            return Product.objects.filter(category=category)
+            if 'product_list_view' in cache:
+                products = cache.get("product_list_view")
+            else:
+                products = Product.objects.filter(category=category)
+                cache.set('product_list_view', products, timeout=settings.TIMEOUT_PRODUCT_LIST_VIEW)
+            return products
         return qs.filter(id__in=products_ids)
 
 

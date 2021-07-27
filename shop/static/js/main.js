@@ -6,8 +6,10 @@ jQuery(document).ready(function($){
         pmess.show()
         pmess.text('You have already rated this post')
     }
-    if(cookie.indexOf(data_id) != -1){
-        $('.product-favorite p').text('Remove from favorites')
+    if(cookie != null){
+        if(cookie.indexOf(data_id) != -1){
+            $('.product-favorite p').text('Remove from favorites')
+        }
     }
     // jQuery sticky Menu
     

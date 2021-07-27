@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.http.response import HttpResponseRedirect
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -48,7 +50,11 @@ def logout(request):
 
 @login_required
 def dashboard(request):
-    orders = Order.objects.filter(user=request.user).order_by('id')
+    if 'orders' in cache:
+        orders = cache.get('orders')
+    else:
+        orders = Order.objects.filter(user=request.user).order_by('id')
+        cache.set('orders', orders, timeout=settings.TIMEOUT_ORDERS)
     return render(request, 'accounts/dashboard.html', {'orders':orders})
 
 @login_required

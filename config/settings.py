@@ -158,6 +158,33 @@ AUTHENTICATION_BACKENDS = [
     'accounts.authentications.EmailBackend',
 ]
 
+if DEBUG == True:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379/1",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://redis/1",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    }
+
+
+TIMEOUT_PRODUCTS = 60 * 60 # one hour
+TIMEOUT_SLIDERS = (60 * 60) * 24 # one day
+TIMEOUT_PRODUCT_LIST_VIEW = 60 * 60 # one hour
+TIMEOUT_ORDERS = (60 * 60) * 2 # two hour
+
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 
