@@ -19,6 +19,7 @@ defusedxml==0.7.1
 Django==3.2.5
 django-ckeditor==6.1.0
 django-js-asset==1.2.2
+django-redis==5.0.0
 elasticsearch==7.13.3
 elasticsearch-dsl==7.4.0
 flower==0.9.7
