@@ -7,7 +7,7 @@ The project is a Ustore,
   - django
   - redis
   - celery 
-  - postgres
+  - sqlite
    ------------------------------------
    
 #### Install locally
