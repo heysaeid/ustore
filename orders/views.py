@@ -55,9 +55,9 @@ class OrderCreateView(TemplateResponseMixin, View):
                 register_form = UserRegistrationForm(data)
                 if register_form.is_valid():
                     user = register_form.save()
+                    order.user = user
                     auth_user = authenticate(username=user.email, password=cd['password'])
                     auth_login(request, auth_user)
-                    order.user = user
                 else:
                     self.error_message = register_form
                     return self.render_to_response({'cart':self.cart, 'form':form, 'login_form':self.login_form, 'error_message':self.error_message})      
@@ -71,7 +71,8 @@ class OrderCreateView(TemplateResponseMixin, View):
             # launch asynchronous task
             order_created.delay(order.id)
             request.session['order_id'] = order.id
-            return redirect(reverse('payment:request')) 
+            return redirect(reverse('payment:request'))
+            # return redirect('/') 
         return self.render_to_response({'cart':self.cart, 'form':form, 'login_form':self.login_form, 'error_message':self.error_message})      
 
 
@@ -86,5 +87,5 @@ def admin_order_pdf(request, order_id):
     html = render_to_string('orders/order/pdf.html', {'order':order})
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'filename=order_{order.id}.pdf'
-    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/css/pdf.css')])
+    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS('http://127.0.0.1:8000/static/css/pdf.css')])
     return response

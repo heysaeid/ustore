@@ -4,15 +4,16 @@ from django.core.cache import cache
 from django.db.models import Q
 from django.http import request
 from django.shortcuts import render, get_object_or_404
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import BadHeaderError
 from django.db.models import Count
 from django.conf import settings
 from django.views.generic import ListView
 from cart.forms import CartAddProductForm
-from .recommender import Recommender
-from .models import Category, Product, Slider
 from orders.models import OrderItem
+from .models import Category, Product, Slider
 from .forms import ReviewForm, ContactForm
+from .tasks import contact_send_mail
+from .recommender import Recommender
 
 r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB, decode_responses=True)
 
@@ -81,7 +82,7 @@ def contact(request):
             cd = form.cleaned_data
             try:
                 message = 'Email sent successfully, we will reply soon'
-                send_mail(cd['subject'], cd['message'], cd['from_email'], ['yozellon@gmail.com'])
+                contact_send_mail.delay(cd['subject'], cd['message'], cd['from_email'])
             except BadHeaderError:
                 message = 'Invaild header found.'
     else:

@@ -50,11 +50,7 @@ def logout(request):
 
 @login_required
 def dashboard(request):
-    if 'orders' in cache:
-        orders = cache.get('orders')
-    else:
-        orders = Order.objects.filter(user=request.user).order_by('id')
-        cache.set('orders', orders, timeout=settings.TIMEOUT_ORDERS)
+    orders = Order.objects.filter(user=request.user).order_by('id')
     return render(request, 'accounts/dashboard.html', {'orders':orders})
 
 @login_required

@@ -59,7 +59,7 @@
                                                             </td>
 
                                                             <td class="product-price">
-                                                                <span class="amount">£{{ product.price }}</span> 
+                                                                <span class="amount">${{ product.price }}</span> 
                                                             </td>
 
                                                             <td class="product-quantity">
@@ -72,7 +72,7 @@
                                                             </td>
 
                                                             <td class="product-subtotal">
-                                                                <span class="amount">£{{ item.total_price }}</span> 
+                                                                <span class="amount">${{ item.total_price }}</span> 
                                                             </td>
                                                         </tr>
                                                     {% endwith %}
@@ -82,9 +82,9 @@
                                                 <td class="actions" colspan="6">
                                                     <div class="coupon">
                                                         <form action="{% url 'coupons:apply' %}" method="POST" class="coupon">
+                                                            {% csrf_token %}
                                                             <label for="coupon_code">Coupon:</label>
                                                             {{ coupon_apply_form.code }}
-                                                            {% csrf_token %}
                                                             <input type="submit" value="Apply Coupon" name="apply_coupon" class="button">
                                                         </form>
                                                         <!-- <input type="text" placeholder="Coupon code" value="" id="coupon_code" class="input-text" name="coupon_code"> -->
@@ -108,7 +108,7 @@
                                                     <a href="{{ product.get_absolute_url }}">
                                                         <img width="325" height="325" alt="T_4_front" class="attachment-shop_catalog wp-post-image" src="{{ product.image.url }}">
                                                         <h3>{{ product.name }}</h3>
-                                                        <span class="price"><span class="amount">£{{ product.price }}</span></span>
+                                                        <span class="price"><span class="amount">${{ product.price }}</span></span>
                                                     </a>
 
                                                     <a class="add_to_cart_button" rel="nofollow" href="">Select options</a>
@@ -126,7 +126,7 @@
                                         <tbody>
                                             <tr class="cart-subtotal">
                                                 <th>Cart Subtotal</th>
-                                                <td><span class="amount">£{{ cart.get_total_price }}</span></td>
+                                                <td><span class="amount">${{ cart.get_total_price }}</span></td>
                                             </tr>
 
                                             <tr class="shipping">
@@ -134,7 +134,7 @@
                                                 <td>
                                                     
                                                     {% if cart.coupon %}
-                                                        {{ cart.get_discount }}
+                                                    ${{ cart.get_discount }}
                                                     {% else %}
                                                         0
                                                     {% endif %}
@@ -144,7 +144,7 @@
 
                                             <tr class="order-total">
                                                 <th>Order Total</th>
-                                                <td><strong><span class="amount">£{{ cart.get_total_price_after_discount }}</span></strong> </td>
+                                                <td><strong><span class="amount">${{ cart.get_total_price_after_discount }}</span></strong> </td>
                                             </tr>
                                         </tbody>
                                     </table>
