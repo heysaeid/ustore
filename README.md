@@ -9,3 +9,17 @@ The project is a Ustore,
   - celery 
   - postgres
    ------------------------------------
+   
+#### Install locally
+```bash
+python -m venv env
+source env/bin/activate
+git clone https://github.com/heysaeid/ustore.git
+cd ustore
+pip install -r requirements.txt
+```
+
+Migrate database and run project:
+```
+python manage.py migrate
+python manage.py runserver
