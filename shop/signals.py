@@ -6,6 +6,7 @@ from .models import Product, Slider
 @receiver([post_save, post_delete], sender=Product)
 def remove_product_cache(sender, **kwargs):
     cache.delete('products')
+    cache.delete('product_list_view')
 
 @receiver([post_save, post_delete], sender=Slider)
 def remove_slider_cache(sender, **kwargs):

@@ -1,6 +1,4 @@
-from django.conf import settings
 from django.http.response import HttpResponseRedirect
-from django.core.cache import cache
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
