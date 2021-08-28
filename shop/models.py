@@ -32,7 +32,7 @@ class Product(models.Model):
     description = RichTextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.IntegerField(null=True, blank=True)
-    sales_number = models.PositiveIntegerField(null=True, blank=True, default=0)
+    sales_number = models.PositiveSmallIntegerField(null=True, blank=True, default=0)
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -67,7 +67,7 @@ class Review(models.Model):
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     email = models.EmailField()
-    rating = models.PositiveIntegerField(default=1)
+    rating = models.PositiveSmallIntegerField(default=1)
     description = models.TextField()
 
     def __str__(self):
