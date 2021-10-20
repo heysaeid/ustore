@@ -54,6 +54,7 @@ def product_detail(request, slug):
     product = Product.objects.get(slug=slug)
     review_form = ReviewForm(request.POST or None)
     data = {}
+    # Post a comment
     if request.is_ajax():
         if review_form.is_valid():
             form = review_form.save(commit=False)

@@ -38,8 +38,8 @@ def verify(request):
     else:
         message = 'Transaction failed or canceled by user'
         """ order.paid = True
-        order.transaction_id = "23sed123d21"
-        order.save() """
+        order.transaction_id = ""
+        order.save(update_fields=['paid', 'transaction_id']) """
         # lounch asynchronous task
         payment_coplated.delay(order.id)
     return render(request, 'payment/verify.html', {"message":message})

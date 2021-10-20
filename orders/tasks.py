@@ -1,5 +1,5 @@
-from celery.decorators import task
-from django.core.mail import message, send_mail
+from celery import task
+from django.core.mail import send_mail
 from .models import Order
 
 @task

@@ -11,7 +11,7 @@ from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from cart.cart import Cart
 from shop.models import Product
-from .task import order_created
+from .tasks import order_created
 from shop.recommender import Recommender
 from accounts.forms import LoginForm, UserRegistrationForm
 
