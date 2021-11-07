@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from django.conf import settings
 from zeep import Client
 from orders.models import Order
 from .tasks import payment_coplated
@@ -14,7 +13,7 @@ CallbackURL = 'http://127.0.0.1:8000/payment/verify/' # Important: need to edit 
 
 def send_request(request):
     order_id = request.session.get('order_id')
-    order = get_object_or_404(Order, pk=order_id)
+    order = get_object_or_404(Order, pk=order_id, user=request.user)
     if 'coupon_id' in request.session:
         del request.session['coupon_id']
         request.session.modified = True
@@ -26,7 +25,7 @@ def send_request(request):
 
 def verify(request):
     order_id = request.session.get('order_id')
-    order = get_object_or_404(Order, pk=order_id)
+    order = get_object_or_404(Order, pk=order_id, user=request.user)
     if request.GET.get('Status') == 'OK':
         result = client.service.PaymentVerification(MERCHANT, request.GET['Authority'], amount)
         if result.Status == 100:

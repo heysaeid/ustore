@@ -1,14 +1,11 @@
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView as LoginAuthView
-from django.urls import reverse
 from django.views.generic.edit import CreateView
 from orders.models import Order, OrderItem
 from .forms import UserRegistrationForm, AuthenticationForm
-from .decorators import is_login
 
 # Create your views here.
 class RegisterView(CreateView):
@@ -29,7 +26,7 @@ class LoginView(LoginAuthView):
 
 @login_required
 def dashboard(request):
-    orders = Order.objects.filter(user=request.user).order_by('id')
+    orders = Order.objects.filter(user=request.user).select_related('user')
     return render(request, 'accounts/dashboard.html', {'orders':orders})
 
 @login_required

@@ -167,6 +167,7 @@ TIMEOUT_SLIDERS = (60 * 60) * 24 # one day
 TIMEOUT_PRODUCT_LIST_VIEW = 60 * 60 # one hour
 TIMEOUT_ORDERS = (60 * 60) * 2 # two hour
 
+EMAIL_HOST_USER = 'ustore@gmail.com'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'

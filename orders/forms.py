@@ -9,12 +9,12 @@ class OrderCreateForm(forms.ModelForm):
         fields =  ['first_name', 'last_name', 'address', 'city', 'county', 'postal_code', 'phone', 'email', 'password']
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
+        self.is_login = kwargs.pop('is_login', None)
         super(OrderCreateForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'input-text'
 
-        if self.request.user.is_authenticated:
+        if self.is_login:
             self.fields['password'].required = False
 
         self.fields['city'].widget.attrs['placeholder'] = 'Town / City'

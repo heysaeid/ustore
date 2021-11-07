@@ -5,15 +5,13 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.conf import settings
 from django.views.generic.base import TemplateResponseMixin, View
-from .models import Order, OrderItem
-from .forms import OrderCreateForm
+from accounts.forms import AuthenticationForm, UserRegistrationForm
 from cart.cart import Cart
 from shop.models import Product
+from .models import Order, OrderItem
+from .forms import OrderCreateForm
 from .tasks import order_created
-from shop.recommender import Recommender
-from accounts.forms import LoginForm, UserRegistrationForm
 
 # Create your views here.
 class OrderCreateView(TemplateResponseMixin, View):
@@ -21,58 +19,55 @@ class OrderCreateView(TemplateResponseMixin, View):
     cart = None
     login_form = None
     error_message = None
-
-    def get_form(instance=None, data=None):
-        return OrderCreateForm(instance=instance, data=data)
+    is_login = False
 
     def dispatch(self, request):
         self.cart = Cart(request)
-        self.login_form = LoginForm()
+        self.is_login = request.user.is_authenticated
+        if not self.is_login:
+            self.login_form = AuthenticationForm()
         return super().dispatch(request)
 
     def get(self, request, *args, **kwargs):
         if self.cart:
             cart_products = [item['product'] for item in self.cart]
-            if request.user.is_authenticated:
-                form = OrderCreateForm(instance=request.user.orders.first(), request=request)
-            else:
-                form = OrderCreateForm(request=request)
+            form = OrderCreateForm(is_login=self.is_login)
+            if self.is_login:
+                form = OrderCreateForm(instance=request.user.orders.first(), is_login=self.is_login)
             return self.render_to_response({'cart':self.cart, 'form':form, 'login_form':self.login_form, 'error_message':self.error_message})
-        else:
-            return redirect('cart:cart_detail')
+        return redirect('cart:cart_detail')
 
     def post(self, request, *args, **kwargs):
-        form = OrderCreateForm(request.POST, request=request)
+        form = OrderCreateForm(request.POST, is_login=self.is_login)
         if form.is_valid():
-            order = form.save(commit=False)
-
-            # If the user did not log in, we will create an account
-            if not request.user.is_authenticated:
+            order_form = form.save(commit=False)
+            if not self.is_login:
                 cd = form.cleaned_data
                 ind = cd['email'].index('@')
                 username = cd['email'][0:ind]
                 data = {'username':username, 'email':cd['email'], 'password1':cd['password'], 'password2':cd['password']}
-                register_form = UserRegistrationForm(data)
+                register_form = UserRegistrationForm(data=data)
                 if register_form.is_valid():
                     user = register_form.save()
-                    order.user = user
+                    order_form.user = user
                     auth_user = authenticate(username=user.email, password=cd['password'])
                     auth_login(request, auth_user)
                 else:
                     self.error_message = register_form
                     return self.render_to_response({'cart':self.cart, 'form':form, 'login_form':self.login_form, 'error_message':self.error_message})      
             else:
-                order.user = request.user
-            order.final_price = int(self.cart.get_total_price_after_discount()) * 23000
-            order.save()
+                order_form.user = request.user
+            order_form.final_price = int(self.cart.get_total_price_after_discount()) * 27000
+            order_form.save()
+            my_orders = []
             for item in self.cart:
-                OrderItem.objects.create(order=order, product=item['product'], price=item['price'], quantity=item['quantity'])
+                my_orders.append(OrderItem(order=order_form, product=item['product'], price=item['price'], quantity=item['quantity']))
+            OrderItem.objects.bulk_create(my_orders)
             self.cart.clear()
             # launch asynchronous task
-            order_created.delay(order.id)
-            request.session['order_id'] = order.id
+            order_created.delay(order_form.id, order_form.first_name, order_form.email)
+            request.session['order_id'] = order_form.id
             return redirect(reverse('payment:request'))
-            # return redirect('/') 
         return self.render_to_response({'cart':self.cart, 'form':form, 'login_form':self.login_form, 'error_message':self.error_message})      
 
 

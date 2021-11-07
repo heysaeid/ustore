@@ -7,6 +7,7 @@
 {% block form %}
     <form method="POST">
         {% csrf_token %}
+        
         {% if form.errors %}
             {% for field in form %}
                 {% for error in field.errors %}
@@ -17,10 +18,7 @@
                     <p class="error-message">{{ error }}</p>
             {% endfor %}
         {% endif %}
-        
-        {% if error_message %}
-            <p class="error-message">{{ error_message }}</p>
-        {% endif %}
+
         <div>
             {{ form.username.label_tag }}
             {{ form.username }}

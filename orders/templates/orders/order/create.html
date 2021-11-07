@@ -37,7 +37,7 @@
                                 {% endfor %}
                             {% endif %}
                             
-                            {% if error_message %}
+                            {% if error_message.errors %}
                                 {% for field in error_message %}
                                     {% for error in field.errors %}
                                         <p style="color: red;">{{ error }}</p>
@@ -45,7 +45,7 @@
                                 {% endfor %}
                             {% endif %}
                                 
-                            {% if not request.user.is_authenticated %}
+                            {% if login_form %}
                                 <div class="woocommerce-info">Returning customer? <a class="showlogin" data-toggle="collapse" href="#login-form-wrap" aria-expanded="false" aria-controls="login-form-wrap">Click here to login</a>
                                 </div>
 
@@ -56,7 +56,7 @@
                                     <p class="form-row form-row-first">
                                         <label for="username">Username or email <span class="required">*</span>
                                         </label>
-                                        {{ login_form.email }}
+                                        {{ login_form.username }}
                                     </p>
                                     <p class="form-row form-row-last">
                                         <label for="password">Password <span class="required">*</span>
@@ -68,10 +68,9 @@
 
                                     <p class="form-row">
                                         <input type="submit" value="Login" name="login" class="button">
-                                        <label class="inline" for="rememberme"><input type="checkbox" value="forever" id="rememberme" name="rememberme"> Remember me </label>
                                     </p>
-                                    <p class="lost_password">
-                                        <a href="#">Lost your password?</a>
+                                    <p>
+                                        <a href="{% url 'register' %}">Register</a>
                                     </p>
 
                                     <div class="clear"></div>
