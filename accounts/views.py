@@ -2,11 +2,12 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.views import LoginView as LoginAuthView
 from django.urls import reverse
 from django.views.generic.edit import CreateView
 from orders.models import Order, OrderItem
-from .forms import UserRegistrationForm, LoginForm
+from .forms import UserRegistrationForm, AuthenticationForm
 from .decorators import is_login
 
 # Create your views here.
@@ -22,29 +23,9 @@ class RegisterView(CreateView):
         auth_login(self.request, user)
         return result
 
-@is_login
-def login(request):
-    error_message  = None
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(username=cd['email'], password=cd['password'])
-            if user:
-                auth_login(request, user)
-                if request.GET.get('next'):
-                    return HttpResponseRedirect(request.GET.get('next'))
-                else:
-                    return redirect('shop:home')
-            else:
-                error_message = 'Invalid username or password'
-    else:
-        form = LoginForm()
-    return render(request, 'registration/login.html', {'form':form, 'error_message':error_message})
-
-def logout(request):
-    auth_logout(request)
-    return HttpResponseRedirect(reverse('shop:home'))
+class LoginView(LoginAuthView):
+    authentication_form = AuthenticationForm
+    redirect_authenticated_user = True
 
 @login_required
 def dashboard(request):

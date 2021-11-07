@@ -167,7 +167,9 @@ TIMEOUT_SLIDERS = (60 * 60) * 24 # one day
 TIMEOUT_PRODUCT_LIST_VIEW = 60 * 60 # one hour
 TIMEOUT_ORDERS = (60 * 60) * 2 # two hour
 
-LOGIN_REDIRECT_URL = '/'
+
 LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'accounts.User'

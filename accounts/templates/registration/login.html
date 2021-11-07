@@ -14,14 +14,16 @@
                 {% endfor %}
             {% endfor %}
         {% endif %}
-        
-        {% if error_message %}
-            <p class="error-message">{{ error_message }}</p>
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p class="error-message">{{ error }}</p>
+            {% endfor %}    
         {% endif %}
             
         <div>
-            {{ form.email.label_tag }}
-            {{ form.email }}
+            {{ form.username.label_tag }}
+            {{ form.username }}
         </div>
         <div>
             {{ form.password.label_tag }}
