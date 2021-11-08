@@ -19,21 +19,26 @@ r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.
 
 # Create your views here.
 def home(request):
-    # categories = Category.objects.all()
     if 'products' in cache:
         products = cache.get('products')
     else:
         products = Product.objects.filter(available=True)
         cache.set('products', products, timeout=settings.TIMEOUT_PRODUCTS)
+
     # Top Sellers
     top_sellers_ids = best_selling_products(3)
     top_sellers = products.filter(id__in=top_sellers_ids)
+
     # Recently Viewed
     recenlty_viewed_ids = r.lrange('recently_viewd', 0, -1)
     recenlty_viewed_ids = inOrder(recenlty_viewed_ids, 3)
-    recently_viewed = products.filter(id__in=recenlty_viewed_ids).order_by('id')
+    recently_viewed = products.filter(id__in=recenlty_viewed_ids)
+    recently_viewed = dict([(obj.id, obj) for obj in recently_viewed])
+    recently_viewed = [recently_viewed[id] for id in recenlty_viewed_ids]
+
     # Top new
     top_new = products.filter(id__in=top_new_ids(3))
+
     if 'sliders' in cache:
         sliders = cache.get('sliders')
     else:
@@ -112,7 +117,7 @@ class SearchListView(ProductListMixin, ListView):
         if query is not None:
             products = Product.objects.filter(Q(name__icontains=query))
         else:
-            return Http404
+            raise Http404
         return products
 
 class ProductListView(ProductListMixin, ListView):
@@ -142,13 +147,13 @@ class ProductListView(ProductListMixin, ListView):
 
 
 def best_selling_products(num=None):
-    top_sellers_count = OrderItem.objects.values('product').annotate(count=Count('product')).order_by()[:num]
+    top_sellers_count = OrderItem.objects.values('product').annotate(count=Count('product')).order_by('-count')[:num]
     product_ids = [item['product'] for item in top_sellers_count]
     return product_ids
 
 def top_new_ids(num=None):
     list_ids = r.hgetall('product_visit')
-    list_ids = sorted(list_ids.items(), key=lambda d: int(d[1]), reverse=True)[:3]
+    list_ids = sorted(list_ids.items(), key=lambda d: int(d[1]), reverse=True)[:num]
     return [item[0] for item in list_ids]
 
 def inOrder(nums, num):
