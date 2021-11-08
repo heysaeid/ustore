@@ -147,8 +147,8 @@ class ProductListView(ProductListMixin, ListView):
 
 
 def best_selling_products(num=None):
-    top_sellers_count = OrderItem.objects.values('product').annotate(count=Count('product')).order_by('-count')[:num]
-    product_ids = [item['product'] for item in top_sellers_count]
+    top_sellers_count = Product.objects.values_list('id').annotate(count=Count('order_items')).order_by('-count')[:num]
+    product_ids = [item[0] for item in top_sellers_count]
     return product_ids
 
 def top_new_ids(num=None):
