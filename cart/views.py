@@ -44,13 +44,8 @@ def update_cart(request):
     data = {'status':'ok'}
     if request.is_ajax():
         for i, item in enumerate(session):
-            try:
-                quantity = int(request.POST[f'form-{i}-quantity'])
-                if quantity > 0 and quantity < 11:
-                    session[item]['quantity'] = quantity
-            except ValueError:
-                data['status'] = ''
-                data['error'] = 'Input data type is incorrect'
-                break
+            quantity = int(request.POST[f'form-{i}-quantity'])
+            if quantity > 0 and quantity < 11:
+                session[item]['quantity'] = quantity
         request.session.modified = True
         return JsonResponse(data)
