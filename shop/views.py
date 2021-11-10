@@ -2,18 +2,16 @@ import redis
 from django.http.response import Http404, JsonResponse
 from django.core.cache import cache
 from django.db.models import Q
-from django.http import request
 from django.shortcuts import render, get_object_or_404
 from django.core.mail import BadHeaderError
-from django.db.models import Count
 from django.conf import settings
 from django.views.generic import ListView
 from cart.forms import CartAddProductForm
-from orders.models import OrderItem
 from .models import Category, Product, Slider
 from .forms import ReviewForm, ContactForm
 from .tasks import contact_send_mail
 from .recommender import Recommender
+from .utils import best_selling_products, top_new_ids, inOrder
 
 r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB, decode_responses=True)
 
@@ -26,7 +24,7 @@ def home(request):
         cache.set('products', products, timeout=settings.TIMEOUT_PRODUCTS)
 
     # Top Sellers
-    top_sellers_ids = best_selling_products(3)
+    top_sellers_ids = best_selling_products(products, 3)
     top_sellers = products.filter(id__in=top_sellers_ids)
 
     # Recently Viewed
@@ -37,7 +35,7 @@ def home(request):
     recently_viewed = [recently_viewed[id] for id in recenlty_viewed_ids]
 
     # Top new
-    top_new = products.filter(id__in=top_new_ids(3))
+    top_new = products.filter(id__in=top_new_ids(r, 3))
 
     if 'sliders' in cache:
         sliders = cache.get('sliders')
@@ -100,66 +98,83 @@ class ProductListMixin(object):
     template_name = 'shop/product_list.html'
     context_object_name = 'products'
     paginate_by = 20
+    page_title = None
 
     def get_context_data(self):
         context = super().get_context_data()
         context['cart_product_form'] = CartAddProductForm()
-        if self.kwargs.get('slug') == None:
-            context['page_title'] = f'search for {self.request.GET.get("s", "")}'
-        else:
-            context['page_title'] = self.kwargs['slug'].replace('/', ' ')
+        context['page_title'] = self.page_title
         return context
 
+
 class SearchListView(ProductListMixin, ListView):
+    
     def get_queryset(self):
         qs = super().get_queryset()
         query = self.request.GET.get('s')
         if query is not None:
-            products = Product.objects.filter(Q(name__icontains=query))
+            products = qs.filter(Q(name__icontains=query))
         else:
             raise Http404
         return products
 
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['page_title'] = f'search for {self.request.GET.get("s", "")}'
+        return context
+        
+
 class ProductListView(ProductListMixin, ListView):
+    category_title = None
 
     def get_queryset(self):
         qs = super().get_queryset()
         slug = self.kwargs['slug']
-        if slug == 'top-sellers':
-            products_ids = best_selling_products()
-        elif slug == 'recently-viewed':
-            recenlty_viewed_ids = r.lrange('recently_viewd', 0, -1)
-            products_ids = inOrder(recenlty_viewed_ids, len(recenlty_viewed_ids))
-        elif slug == 'top-new':
-            products_ids = top_new_ids()
-        elif slug == 'wishlist':
-            cookie = self.request.COOKIES.get('wishlist')
-            products_ids = [int(item) for item in cookie] if cookie  else []
+        category = get_object_or_404(Category, slug=slug)
+        self.category_title = category.name
+        if 'product_list_view' in cache:
+            products = cache.get("product_list_view")
         else:
-            category = get_object_or_404(Category, slug=slug)
-            if 'product_list_view' in cache:
-                products = cache.get("product_list_view")
-            else:
-                products = Product.objects.filter(category=category)
-                cache.set('product_list_view', products, timeout=settings.TIMEOUT_PRODUCT_LIST_VIEW)
-            return products
+            products = qs.filter(category=category)
+            cache.set('product_list_view', products, timeout=settings.TIMEOUT_PRODUCT_LIST_VIEW)
+        return products
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['page_title'] = self.category_title
+        return context
+
+
+class TopSellersView(ProductListMixin, ListView):
+    page_title = 'Top Sellers'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        products_ids = best_selling_products(qs=qs)
         return qs.filter(id__in=products_ids)
 
 
-def best_selling_products(num=None):
-    top_sellers_count = Product.objects.values_list('id').annotate(count=Count('order_items')).order_by('-count')[:num]
-    product_ids = [item[0] for item in top_sellers_count]
-    return product_ids
+class RecentlyViewedView(ProductListMixin, ListView):
+    page_title = 'Recently Viewed'
 
-def top_new_ids(num=None):
-    list_ids = r.hgetall('product_visit')
-    list_ids = sorted(list_ids.items(), key=lambda d: int(d[1]), reverse=True)[:num]
-    return [item[0] for item in list_ids]
+    def get_queryset(self):
+        recenlty_viewed_ids = r.lrange('recently_viewd', 0, -1)
+        products_ids = inOrder(recenlty_viewed_ids, len(recenlty_viewed_ids))
+        return super().get_queryset().filter(id__in=products_ids)
 
-def inOrder(nums, num):
-    nums = map(int, nums)
-    ids = []
-    for x in nums:
-        if x not in ids and len(ids) < num:
-            ids.append(x)
-    return ids
+
+class TopNewView(ProductListMixin, ListView):
+    page_title = 'Top New'
+
+    def get_queryset(self):
+        products_ids = top_new_ids(redis=r)
+        return super().get_queryset().filter(id__in=products_ids)
+
+
+class WishListView(ProductListMixin, ListView):
+    page_title = 'WishList'
+
+    def get_queryset(self):
+            cookie = self.request.COOKIES.get('wishlist')
+            products_ids = [int(item) for item in cookie] if cookie  else []
+            return super().get_queryset().filter(id__in=products_ids)
