@@ -9,6 +9,7 @@ from django.views.generic.base import TemplateResponseMixin, View
 from accounts.forms import AuthenticationForm, UserRegistrationForm
 from cart.cart import Cart
 from shop.models import Product
+from shop.recommender import Recommender
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from .tasks import order_created
@@ -31,6 +32,8 @@ class OrderCreateView(TemplateResponseMixin, View):
     def get(self, request, *args, **kwargs):
         if self.cart:
             cart_products = [item['product'] for item in self.cart]
+            r = Recommender()
+            r.products_bought(product_ids=[item['product'].id for item in self.cart])
             form = OrderCreateForm(is_login=self.is_login)
             if self.is_login:
                 form = OrderCreateForm(instance=request.user.orders.first(), is_login=self.is_login)
@@ -67,6 +70,8 @@ class OrderCreateView(TemplateResponseMixin, View):
             # launch asynchronous task
             order_created.delay(order_form.id, order_form.first_name, order_form.email)
             request.session['order_id'] = order_form.id
+            r = Recommender
+            r.products_bought([item['product'].id for item in self.cart])
             return redirect(reverse('payment:request'))
         return self.render_to_response({'cart':self.cart, 'form':form, 'login_form':self.login_form, 'error_message':self.error_message})      
 

@@ -30,9 +30,8 @@ def home(request):
     # Recently Viewed
     recenlty_viewed_ids = r.lrange('recently_viewd', 0, -1)
     recenlty_viewed_ids = inOrder(recenlty_viewed_ids, 3)
-    recently_viewed = products.filter(id__in=recenlty_viewed_ids)
-    recently_viewed = dict([(obj.id, obj) for obj in recently_viewed])
-    recently_viewed = [recently_viewed[id] for id in recenlty_viewed_ids]
+    recently_viewed = list(products.filter(id__in=recenlty_viewed_ids))
+    recently_viewed.sort(key=lambda x: recenlty_viewed_ids.index(x.id))
 
     # Top new
     top_new = products.filter(id__in=top_new_ids(r, 3))
