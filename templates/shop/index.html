@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
 {% load static %}
 
 {% block title %}
@@ -9,9 +9,9 @@
     
 
     {% if sliders %}
-        {% include 'slider.html' %}
+        {% include 'shop/inc/slider.html' %}
     {% endif %}
-    {% include 'promo.html' %}
+    {% include 'shop/inc/promo.html' %}
 
     <div class="maincontent-area">
         <div class="zigzag-bottom"></div>
@@ -54,7 +54,7 @@
         </div>
     </div> <!-- End main content area -->
 
-    {% include 'brands.html' %}
-    {% include 'widget.html' %}
+    {% include 'shop/inc/brands.html' %}
+    {% include 'shop/inc/widget.html' %}
 
 {% endblock %}

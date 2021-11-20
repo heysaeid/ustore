@@ -90,7 +90,7 @@ def contact(request):
                 message = 'Invaild header found.'
     else:
         form = ContactForm()
-    return render(request, 'other/contact.html', {'form':form, 'message':message})
+    return render(request, 'shop/contact.html', {'form':form, 'message':message})
 
 class ProductListMixin(object):
     model = Product

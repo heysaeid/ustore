@@ -1,4 +1,4 @@
 from .forms import NewSubscriberForm
 
 def new_subscribe_form(request):
-    return {'form':NewSubscriberForm()}
+    return {'subcriber_form':NewSubscriberForm()}

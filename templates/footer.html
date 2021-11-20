@@ -34,7 +34,7 @@
                     <div class="newsletter-form">
                         <form action="{% url 'newsletter:new' %}" method="POST">
                             {% csrf_token %}
-                            {{ form.email }}
+                            {{ subcriber_form.email }}
                             <input type="submit" value="Subscribe">
                         </form>
                     </div>
