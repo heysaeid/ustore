@@ -27,7 +27,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200, db_index=True)
     slug = models.CharField(max_length=200, db_index=True)
     image = models.ImageField(upload_to=upload_image, blank=True)
-    description = RichTextField(blank=True)
+    description = RichTextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percent = models.IntegerField(null=True, blank=True)
     available = models.BooleanField(default=True)

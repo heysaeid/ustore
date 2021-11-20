@@ -10,7 +10,11 @@
                     
                     {% for product in top_sellers %}   
                         <div class="single-wid-product">
-                            <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" alt="" class="product-thumb"></a>
+                            {% if product.image %}
+                                <a href="{{ product.get_absolute_url }}">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
+                                </a>
+                            {% endif %}
                             <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
                             <div class="product-wid-rating">
                                 {% if product.average_score.ranges %}
@@ -34,7 +38,11 @@
                     
                     {% for product in recently_viewed %}     
                         <div class="single-wid-product">
-                            <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb"></a>
+                            {% if product.image %}
+                                <a href="{{ product.get_absolute_url }}">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
+                                </a>
+                            {% endif %}
                             <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
                             <div class="product-wid-rating">
                                 {% if product.average_score.ranges %}
@@ -58,7 +66,11 @@
                     
                     {% for product in top_new %}
                         <div class="single-wid-product">
-                            <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" alt="" class="product-thumb"></a>
+                            {% if product.image %}
+                                <a href="{{ product.get_absolute_url }}">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
+                                </a>
+                            {% endif %}
                             <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
                             <div class="product-wid-rating">
                                 {% if product.average_score.ranges %}

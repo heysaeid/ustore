@@ -24,7 +24,9 @@
                             {% for product in products %}
                                 <div class="single-product">
                                     <div class="product-f-image">
-                                        <img src="{{ product.image.url }}" alt="">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="">
+                                        {% endif %}
                                         <div class="product-hover">
                                             <form action="{% url 'cart:cart_add' product.id %}" method="POST" class="cart">
                                                    {{ cart_product_form.override }}
