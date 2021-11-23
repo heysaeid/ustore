@@ -66,12 +66,12 @@ class OrderCreateView(TemplateResponseMixin, View):
             for item in self.cart:
                 my_orders.append(OrderItem(order=order_form, product=item['product'], price=item['price'], quantity=item['quantity']))
             OrderItem.objects.bulk_create(my_orders)
-            self.cart.clear()
             # launch asynchronous task
             order_created.delay(order_form.id, order_form.first_name, order_form.email)
             request.session['order_id'] = order_form.id
-            r = Recommender
+            r = Recommender()
             r.products_bought([item['product'].id for item in self.cart])
+            self.cart.clear()
             return redirect(reverse('payment:request'))
         return self.render_to_response({'cart':self.cart, 'form':form, 'login_form':self.login_form, 'error_message':self.error_message})      
 

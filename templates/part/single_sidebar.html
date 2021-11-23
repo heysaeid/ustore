@@ -11,7 +11,9 @@
         <h2 class="sidebar-title">Products</h2>
         {% for item in latest_products %}
             <div class="thubmnail-recent">
-                <img src="{{ item.image.url }}" class="recent-thumb" alt="{{ item.name }}">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" class="recent-thumb" alt="{{ item.name }}">
+                {% endif %}
                 <h2><a href="{{ item.get_absolute_url }}">{{ item.name }}></a></h2>
                 <div class="product-sidebar-price">
                     <ins>${{ item.price }}</ins> <!-- <del>$100.00</del> -->

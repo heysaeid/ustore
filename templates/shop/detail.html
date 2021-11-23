@@ -50,12 +50,16 @@
                                         {% endif %}
                                     </div>
                                     <div class="product-main-img">
-                                        <img src="{{ product.image.url }}" alt="">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                        {% endif %}
                                     </div>
                                     
                                     <div class="product-gallery">
                                         {% for image in product.gallery.all %}
-                                            <img src="{{ image.image.url }}" alt="{{ image.product.name }}">
+                                            {% if image.image %}
+                                                <img src="{{ image.image.url }}" alt="{{ image.product.name }}">
+                                            {% endif %}
                                         {% endfor %}
                                     </div>
                                 </div>

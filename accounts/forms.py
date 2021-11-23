@@ -17,8 +17,3 @@ class AuthenticationForm(AuthenticationAuthForm):
     error_messages = {
         'invalid_login': "Please enter a correct email and password. Note that both fields may be case-sensitive."
     }
-
-
-class LoginForm(forms.Form):
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'input-text', 'autofocus': True}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input-text'}))

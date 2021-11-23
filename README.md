@@ -5,9 +5,11 @@ The project is a Ustore,
 #### Built With:
   - python
   - django
+  - unit test
+  - rabbitmq
   - redis
   - celery 
-  - sqlite
+  - sqlite - postgresql
    ------------------------------------
    
 #### Install locally

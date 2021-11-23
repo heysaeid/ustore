@@ -35,7 +35,7 @@ class Product(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        #ordering = ('name',)
+        ordering = ('id',)
         index_together = (('id', 'slug'),)
 
     def __str__(self):
@@ -75,5 +75,5 @@ class Slider(models.Model):
     title = models.TextField()
     subtitle = models.CharField(max_length=150)
     image = models.ImageField(upload_to='slider/image/')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, verbose_name='Set category for slider', help_text='Leave this field blank if you have selected a url')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Set category for slider', help_text='Leave this field blank if you have selected a url')
     url = models.URLField(blank=True, verbose_name='Set url for slider', help_text='Leave this field blank if you have selected a category')

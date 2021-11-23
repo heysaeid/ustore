@@ -4,7 +4,9 @@
         {% for item in recommended_products %}
             <div class="single-product">
                 <div class="product-f-image">
-                    <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    {% endif %}
                     <div class="product-hover">
                         <a href="" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
                         <a href="{{ item.get_absolute_url }}" class="view-details-link"><i class="fa fa-link"></i> See details</a>

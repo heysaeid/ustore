@@ -13,6 +13,7 @@ from shop.recommender import Recommender
 
 
 # Create your views here.
+@require_POST
 def cart_add(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
@@ -22,6 +23,7 @@ def cart_add(request, product_id):
         cart.add(product=product, quantity=int(cd['quantity']), override_quantity=cd['override'])
     return redirect('cart:cart_detail')
 
+@require_POST
 def cart_remove(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
@@ -39,13 +41,14 @@ def cart_detail(request):
     return render(request, 'cart/cart_detail.html', {'cart':cart, 'cahnge_quantity_form':cahnge_quantity_form, 'coupon_apply_form':coupon_apply_form, 'recommended_products':recommended_products})
 
 @require_POST
-def update_cart(request):
+def cart_update(request):
     session = request.session['cart']
-    data = {'status':'ok'}
+    data = {'status':'error'}
     if request.is_ajax():
+        data = {'status':'ok'}
         for i, item in enumerate(session):
             quantity = int(request.POST[f'form-{i}-quantity'])
             if quantity > 0 and quantity < 11:
                 session[item]['quantity'] = quantity
         request.session.modified = True
-        return JsonResponse(data)
+    return JsonResponse(data)

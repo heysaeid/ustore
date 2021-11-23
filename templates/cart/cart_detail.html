@@ -2,7 +2,7 @@
 {% load shop_extras %}
 
 {% block title %}
-    Cart Page - Ustore
+    Cart Page
 {% endblock title %}    
 
 {% block content %}
@@ -41,7 +41,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <form action="{% url 'cart:update_cart' %}" method="POST" id="form_update_cart">
+                                            <form action="{% url 'cart:cart_update' %}" method="POST" id="form_update_cart">
                                                 {% csrf_token %}
                                                 {% for item in cart %}
                                                     {% with product=item.product form=cahnge_quantity_form|sort_form:forloop.counter %}
@@ -49,9 +49,11 @@
                                                             <td class="product-remove">
                                                                 <a title="Remove this item" class="remove" href="{% url 'cart:cart_remove' product.id %}">×</a> 
                                                             </td>
-
+                                                            
                                                             <td class="product-thumbnail">
-                                                                <a href="{{ product.image.url }}"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="{{ product.image.url }}"></a>
+                                                                {% if product.image %}
+                                                                    <a href="{{ product.image.url }}"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="{{ product.image.url }}"></a>
+                                                                {% endif %}
                                                             </td>
 
                                                             <td class="product-name">
@@ -106,11 +108,12 @@
                                             {% for product in recommended_products %}
                                                 <li class="product">
                                                     <a href="{{ product.get_absolute_url }}">
-                                                        <img width="325" height="325" alt="T_4_front" class="attachment-shop_catalog wp-post-image" src="{{ product.image.url }}">
+                                                        {% if product.image %}
+                                                            <img width="325" height="325" alt="T_4_front" class="attachment-shop_catalog wp-post-image" src="{{ product.image.url }}">
+                                                        {% endif %}
                                                         <h3>{{ product.name }}</h3>
                                                         <span class="price"><span class="amount">${{ product.price }}</span></span>
                                                     </a>
-
                                                     <a class="add_to_cart_button" rel="nofollow" href="">Select options</a>
                                                 </li>
                                             {% endfor %}

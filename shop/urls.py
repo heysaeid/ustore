@@ -11,6 +11,6 @@ urlpatterns = [
     path('recently-viewed/', views.RecentlyViewedView.as_view(), name='recently_viewed'),
     path('top-new/', views.TopNewView.as_view(), name='top_new'),
     path('wishlist/', views.WishListView.as_view(), name='wishlist'),
-    path('<slug:slug>/', views.ProductListView.as_view(), name='product_list_view'),
     path('product/<slug:slug>/', views.product_detail, name='product_detail'),
+    path('<slug:slug>/', views.ProductListView.as_view(), name='product_list_view'),
 ]

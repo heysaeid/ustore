@@ -6,7 +6,9 @@
             
             {% for item in sliders %}   
                 <li>
-                    <img src="{{ item.image.url }}" alt="Slide">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="Slide">
+                    {% endif %}
                     <div class="caption-group">
                         <h2 class="caption title">
                             {{ item.title|safe }}

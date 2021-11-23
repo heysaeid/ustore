@@ -21,7 +21,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
-    final_price = models.PositiveIntegerField()
+    final_price = models.PositiveIntegerField(null=True, blank=True)
 
     class Meta:
         ordering = ('-created',)

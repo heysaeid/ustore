@@ -24,7 +24,7 @@ def new(request):
             data['status'] = 'ok'
         else:
             data['error'] = 'This email already exists'
-        return JsonResponse(data)
+    return JsonResponse(data)
 
 def confirm(request):
     sub = get_object_or_404(Subscribe, email=request.GET['email'])
