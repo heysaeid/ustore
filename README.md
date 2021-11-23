@@ -7,8 +7,8 @@ The project is a Ustore,
   - django
   - unit test
   - rabbitmq
-  - redis
   - celery 
+  - redis
   - sqlite - postgresql
    ------------------------------------
    
