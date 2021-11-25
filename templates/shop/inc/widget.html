@@ -17,12 +17,14 @@
                             {% endif %}
                             <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
                             <div class="product-wid-rating">
-                                {% if product.average_score.ranges %}
-                                    {% for i in product.average_score.ranges %}
-                                        <i class="fa fa-star"></i>
-                                    {% endfor %}
-                                    ({{ product.average_score.reviews_count }})
-                                {% endif %}
+                                {% with reviews as product.average_score %}
+                                    {% if reviews.ranges %}
+                                        {% for i in average.ranges %}
+                                            <i class="fa fa-star"></i>
+                                        {% endfor %}
+                                        ({{ reviews.reviews_count }})
+                                    {% endif %}
+                                {% endwith %}
                             </div>
                             <div class="product-wid-price">
                                 <ins>${{ product.price }}</ins> <!-- <del>$425.00</del> -->
@@ -45,12 +47,14 @@
                             {% endif %}
                             <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
                             <div class="product-wid-rating">
-                                {% if product.average_score.ranges %}
-                                    {% for i in product.average_score.ranges %}
-                                        <i class="fa fa-star"></i>
-                                    {% endfor %}
-                                    ({{ product.average_score.reviews_count }})
-                                {% endif %}
+                                {% with reviews as product.average_score %}
+                                    {% if reviews.ranges %}
+                                        {% for i in average.ranges %}
+                                            <i class="fa fa-star"></i>
+                                        {% endfor %}
+                                        ({{ reviews.reviews_count }})
+                                    {% endif %}
+                                {% endwith %}
                             </div>
                             <div class="product-wid-price">
                                 <ins>{{ product.price }}</ins><!--  <del>$425.00</del> -->
@@ -73,12 +77,14 @@
                             {% endif %}
                             <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
                             <div class="product-wid-rating">
-                                {% if product.average_score.ranges %}
-                                    {% for i in product.average_score.ranges %}
-                                        <i class="fa fa-star"></i>
-                                    {% endfor %}
-                                    ({{ product.average_score.reviews_count }})
-                                {% endif %}
+                                {% with reviews as product.average_score %}
+                                    {% if reviews.ranges %}
+                                        {% for i in average.ranges %}
+                                            <i class="fa fa-star"></i>
+                                        {% endfor %}
+                                        ({{ reviews.reviews_count }})
+                                    {% endif %}
+                                {% endwith %}
                             </div>
                             <div class="product-wid-price">
                                 <ins>${{ product.price }}</ins> <!-- <del>$425.00</del> -->

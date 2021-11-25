@@ -17,11 +17,11 @@ r = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.
 
 # Create your views here.
 def home(request):
-    if 'products' in cache:
-        products = cache.get('products')
-    else:
-        products = Product.objects.filter(available=True)
-        cache.set('products', products, timeout=settings.TIMEOUT_PRODUCTS)
+    # if 'products' in cache:
+    #     products = cache.get('products')
+    # else:
+    products = Product.objects.filter(available=True)
+    #cache.set('products', products, timeout=settings.TIMEOUT_PRODUCTS)
 
     # Top Sellers
     top_sellers_ids = best_selling_products(products, 3)
@@ -53,7 +53,7 @@ def home(request):
     )
 
 def product_detail(request, slug):
-    product = Product.objects.get(slug=slug)
+    product = Product.objects.select_related('category').prefetch_related('gallery').get(slug=slug)
     review_form = ReviewForm(request.POST or None)
     data = {}
     # Post a comment

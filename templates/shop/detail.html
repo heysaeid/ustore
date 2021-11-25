@@ -42,12 +42,14 @@
                                 <div class="product-images">
                                     <div class="product-wid-rating">
                                         Score : 
-                                        {% if product.average_score.ranges %}
-                                            {% for i in product.average_score.ranges %}
-                                                <i class="fa fa-star"></i>
-                                            {% endfor %}
-                                            ({{ product.average_score.reviews_count }})
-                                        {% endif %}
+                                        {% with reviews as product.average_score %}
+                                            {% if reviews.ranges %}
+                                                {% for i in average.ranges %}
+                                                    <i class="fa fa-star"></i>
+                                                {% endfor %}
+                                                ({{ reviews.reviews_count }})
+                                            {% endif %}
+                                        {% endwith %}
                                     </div>
                                     <div class="product-main-img">
                                         {% if product.image %}

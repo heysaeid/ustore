@@ -27,8 +27,10 @@ urlpatterns = [
     path('coupons/', include('coupons.urls', namespace='coupons')),
     path('newsletter/', include('newsletter.urls', namespace='newsletter')),
     path('', include('shop.urls', namespace='shop')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

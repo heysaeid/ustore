@@ -1,7 +1,7 @@
 {% extends '_base.html' %}
 {% load static %}
 
-{% block title %} - {{ page_title|title }} {% endblock title %}
+{% block title %} {{ page_title|title }} {% endblock title %}
 
 {% block content %}
     <div class="product-big-title-area">
@@ -24,7 +24,9 @@
                     <div class="col-md-3 col-sm-6">
                         <div class="single-shop-product">
                             <div class="product-upper product-upper-list">
-                                <img src="/media/{{ product.image }}" alt="{{ product.name }}">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% endif %}
                             </div>
                             <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
                             <div class="product-carousel-price">

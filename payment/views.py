@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from zeep import Client
+#from zeep import Client
 from orders.models import Order
 from .tasks import payment_coplated
 
 MERCHANT = ''
-client = Client('https://www.zarinpal.com/pg/services/WebGate/wsdl')
+client = '' # Client('https://www.zarinpal.com/pg/services/WebGate/wsdl')
 amount = 1000  # Toman / Required
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"  # Required
 email = ''  # Optional
@@ -17,11 +17,12 @@ def send_request(request):
     if 'coupon_id' in request.session:
         del request.session['coupon_id']
         request.session.modified = True
-    result = client.service.PaymentRequest(MERCHANT, order.final_price, description, order.email, order.phone, CallbackURL)
-    if result.Status == 100:
-        return redirect('https://www.zarinpal.com/pg/StartPay/' + str(result.Authority))
-    else:
-        return HttpResponse('Error code: ' + str(result.Status))
+    # result = client.service.PaymentRequest(MERCHANT, order.final_price, description, order.email, order.phone, CallbackURL)
+    # if result.Status == 100:
+    #     return redirect('https://www.zarinpal.com/pg/StartPay/' + str(result.Authority))
+    # else:
+    #     return HttpResponse('Error code: ' + str(result.Status))
+    return HttpResponse('Error code')
 
 def verify(request):
     order_id = request.session.get('order_id')

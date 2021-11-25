@@ -42,13 +42,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'shop.apps.ShopConfig',
-    'cart.apps.CartConfig',
-    'orders.apps.OrdersConfig',
-    'payment.apps.PaymentConfig',
-    'coupons.apps.CouponsConfig',
-    'newsletter.apps.NewsletterConfig',
+
+    # Third-party
+    'debug_toolbar',
     'ckeditor',
+
+    # Local
+    'shop',
+    'cart',
+    'orders',
+    'payment',
+    'coupons',
+    'newsletter',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +64,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware', # new
 ]
+
+INTERNAL_IPS = '127.0.0.1'
 
 ROOT_URLCONF = 'config.urls'
 
@@ -94,7 +102,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
