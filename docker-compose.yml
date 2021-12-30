@@ -1,0 +1,48 @@
+services:
+  web:
+    build: . 
+    command: python /app/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - rabbitmq
+      - db
+      - redis
+  
+  redis:
+    image: redis:6.2.6
+    ports:
+      - 6379:6379
+
+  rabbitmq:
+    image: rabbitmq:3.9.11
+    ports:
+      - "5672:5672"
+    restart: on-failure
+    
+  celery_worker:
+    build: .
+    container_name: celery_worker
+    command: "celery -A config worker --loglevel=INFO"
+    depends_on:
+      - web
+      - rabbitmq
+      - db
+    environment:
+      - C_FORCE_ROOT="true"
+    restart: on-failure
+
+  db:
+    image: postgres:13.4
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+    ports:
+      - 5432:5432
+    restart: on-failure
+
+volumes:
+  postgres_data:

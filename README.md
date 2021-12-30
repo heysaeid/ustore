@@ -9,19 +9,17 @@ The project is a Ustore,
   - rabbitmq
   - celery 
   - redis
-  - sqlite - postgresql
+  - sqlite
+  - postgresql
+  - docker
    ------------------------------------
    
 #### Install locally
 ```bash
-python -m venv env
-source env/bin/activate
-git clone https://github.com/heysaeid/ustore.git
-cd ustore
-pip install -r requirements.txt
+docker-compose up -d --build
+docker-compose exec web python manage.py migrate
 ```
 
-Migrate database and run project:
+### create superuser
 ```
-python manage.py migrate
-python manage.py runserver
+docker-compose exec web python manage.py createsuperuser
